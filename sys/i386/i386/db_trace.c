@@ -527,6 +527,20 @@ db_trace_self(void)
 	db_backtrace(curthread, NULL, frame, callpc, 0, -1);
 }
 
+void
+db_trace_self_depth(int depth)
+{
+	struct i386_frame *frame;
+	db_addr_t callpc;
+	register_t ebp;
+
+	__asm __volatile("movl %%ebp,%0" : "=r" (ebp));
+	frame = (struct i386_frame *)ebp;
+	callpc = (db_addr_t)db_get_value((int)&frame->f_retaddr, 4, FALSE);
+	frame = frame->f_frame;
+	db_backtrace(curthread, NULL, frame, callpc, 0, depth);
+}
+
 int
 db_trace_thread(struct thread *thr, int count)
 {

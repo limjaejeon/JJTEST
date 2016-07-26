@@ -140,13 +140,6 @@ struct l_rlimit {
 	l_ulong rlim_max;
 };
 
-/* mmap options */
-#define	LINUX_MAP_SHARED	0x0001
-#define	LINUX_MAP_PRIVATE	0x0002
-#define	LINUX_MAP_FIXED		0x0010
-#define	LINUX_MAP_ANON		0x0020
-#define	LINUX_MAP_GROWSDOWN	0x0100
-
 struct l_mmap_argv {
 	l_uintptr_t	addr;
 	l_size_t	len;
@@ -222,14 +215,14 @@ struct l_stat64 {
 	l_ulonglong	st_ino;
 };
 
-struct l_statfs64 { 
-        l_int           f_type; 
-        l_int           f_bsize; 
-        uint64_t        f_blocks; 
-        uint64_t        f_bfree; 
-        uint64_t        f_bavail; 
-        uint64_t        f_files; 
-        uint64_t        f_ffree; 
+struct l_statfs64 {
+        l_int           f_type;
+        l_int           f_bsize;
+        uint64_t        f_blocks;
+        uint64_t        f_bfree;
+        uint64_t        f_bavail;
+        uint64_t        f_files;
+        uint64_t        f_ffree;
         l_fsid_t        f_fsid;
         l_int           f_namelen;
         l_int           f_spare[6];

@@ -47,7 +47,13 @@ typedef atomic64_t atomic_long_t;
 
 #else
 
-typedef atomic_t atomic_long_t;
+//#ifdef __TOS_BP_11
+typedef struct{
+    volatile long counter;
+} atomic_long_t;
+//#else
+//typedef atomic_t atomic_long_t;
+//#endif
 
 #define ATOMIC_LONG_INIT(i)	ATOMIC_INIT(i)
 #define ATOMIC_LONG_PFX(x)	atomic ## x

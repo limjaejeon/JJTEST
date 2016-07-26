@@ -3154,7 +3154,7 @@ geom/raid3/g_raid3_ctl.c	optional geom_raid3
 geom/shsec/g_shsec.c		optional geom_shsec
 geom/stripe/g_stripe.c		optional geom_stripe
 contrib/ck/src/ck_epoch.c	standard \
-	compile-with "${NORMAL_C} -I$S/contrib/ck/include"
+	compile-with "${NORMAL_C} -I$S/contrib/ck/include -Wno-cast-qual"
 
 contrib/xz-embedded/freebsd/xz_malloc.c	\
 	optional xz_embedded | geom_uzip \
@@ -4324,7 +4324,7 @@ vm/uma_core.c			standard
 vm/uma_dbg.c			standard
 vm/memguard.c			optional DEBUG_MEMGUARD
 vm/vm_eventhandler.c		standard \
-	compile-with "${NORMAL_C} -I$S/contrib/ck/include"
+	compile-with "${NORMAL_C} -I$S/contrib/ck/include -Wno-cast-qual"
 
 vm/vm_fault.c			standard
 vm/vm_glue.c			standard

@@ -60,9 +60,13 @@ struct cpuinfo_x86 {
 	u32			microcode;
 };
 
+#ifndef __TOS_BP_11
+#if 0
 #define	mb()	__asm __volatile("mfence;" : : : "memory")
 #define	wmb()	__asm __volatile("sfence;" : : : "memory")
 #define	rmb()	__asm __volatile("lfence;" : : : "memory")
+#endif
+#endif
 
 #define smp_mb() mb()
 #define smp_wmb() wmb()

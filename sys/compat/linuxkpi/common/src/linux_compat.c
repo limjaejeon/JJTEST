@@ -134,6 +134,9 @@ struct list_head cdev_list;
 struct ida *hwmon_idap;
 DEFINE_IDA(hwmon_ida);
 
+extern void kmap_init(void);
+extern void kmap_cleanup(void);
+
 /*
  * XXX need to define irq_idr 
  */
@@ -1772,6 +1775,8 @@ linux_compat_init(void *arg)
 	INIT_LIST_HEAD(&pci_drivers);
 	INIT_LIST_HEAD(&pci_devices);
 	spin_lock_init(&pci_lock);
+
+    kmap_init(); /*__TOS_BP_11*/
 }
 
 SYSINIT(linux_compat, SI_SUB_DRIVERS, SI_ORDER_SECOND, linux_compat_init, NULL);
@@ -1787,7 +1792,11 @@ linux_compat_uninit(void *arg)
 	destroy_workqueue(system_wq);
 	destroy_workqueue(system_unbound_wq);
 
+    synchronize_rcu(); /*__TOS_BP_11*/
+    sx_destroy(&linux_global_lock); /*__TOS_BP_11*/
 	spin_lock_destroy(&pci_lock);
+
+    kmap_cleanup(); /*__TOS_BP_11*/
 }
 SYSUNINIT(linux_compat, SI_SUB_DRIVERS, SI_ORDER_SECOND, linux_compat_uninit, NULL);
 

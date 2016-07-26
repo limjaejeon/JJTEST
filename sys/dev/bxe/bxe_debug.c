@@ -284,6 +284,7 @@ bxe_dump_mbuf_data(struct bxe_softc *sc,
 }
 
 #ifdef DDB
+#if 0
 
 static void bxe_ddb_usage()
 {
@@ -355,7 +356,7 @@ static void bxe_ddb(db_expr_t blah1,
             goto bxe_ddb_done;
         }
 
-        db_printf("addr=%p", addr);
+        db_printf("addr=%u", addr);
     }
 
 bxe_ddb_done:
@@ -363,6 +364,6 @@ bxe_ddb_done:
     db_flush_lex();
     if (ifp) if_rele(ifp);
 }
-
+#endif /*0*/
 #endif /* DDB */
 

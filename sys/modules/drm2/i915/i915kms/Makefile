@@ -131,3 +131,6 @@ CWARNFLAGS.i915_gem_gtt.c=	-Wno-tautological-pointer-compare
 CWARNFLAGS.i915_gem_tiling.c=	-Wno-tautological-pointer-compare
 CWARNFLAGS.i915_gem_execbuffer.c=	-Wno-tautological-pointer-compare  -Wno-pointer-arith
 CWARNFLAGS.i915_gpu_error.c=	-Wno-format
+CWARNFLAGS +=   -Wno-cast-qual
+
+CFLAGS += -D__TOS_BP_11

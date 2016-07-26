@@ -790,3 +790,5 @@ afterinstall: .PHONY
 SUBDIR:= ${SUBDIR:u:O}
 
 .include <bsd.subdir.mk>
+
+CWARNFLAGS += -Wno-cast-qual

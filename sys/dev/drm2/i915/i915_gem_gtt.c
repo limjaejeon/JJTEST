@@ -746,7 +746,7 @@ static void gen8_ppgtt_clear_pte_range(struct i915_address_space *vm,
 			num_entries--;
 		}
 
-		kunmap_px(ppgtt, pt);
+		kunmap_px(ppgtt, pt_vaddr);
 
 		pte = 0;
 		if (++pde == I915_PDES) {
@@ -1425,10 +1425,10 @@ static void gen8_dump_pdp(struct i915_page_directory_pointer *pdp,
 				if (!found)
 					continue;
 
-				seq_printf(m, "\t\t0x%zx [%03d,%03d,%04d]: =", va, pdpe, pde, pte);
+				seq_printf(m, "\t\t0x%llx [%03d,%03d,%04d]: =", va, pdpe, pde, pte);
 				for (i = 0; i < 4; i++) {
 					if (pt_vaddr[pte + i] != scratch_pte)
-						seq_printf(m, " %zx", pt_vaddr[pte + i]);
+						seq_printf(m, " %llx", pt_vaddr[pte + i]);
 					else
 						seq_puts(m, "  SCRATCH ");
 				}
@@ -1461,7 +1461,7 @@ static void gen8_dump_ppgtt(struct i915_hw_ppgtt *ppgtt, struct seq_file *m)
 			if (!test_bit(pml4e, pml4->used_pml4es))
 				continue;
 
-			seq_printf(m, "    PML4E #%zu\n", pml4e);
+			seq_printf(m, "    PML4E #%llu\n", pml4e);
 			gen8_dump_pdp(pdp, start, length, scratch_pte, m);
 		}
 	}
@@ -2102,7 +2102,7 @@ static int gen6_ppgtt_init(struct i915_hw_ppgtt *ppgtt)
 
 	gen6_write_page_range(dev_priv, &ppgtt->pd, 0, ppgtt->base.total);
 
-	DRM_DEBUG_DRIVER("Allocated pde space (%zdM) at GTT entry: %zx\n",
+	DRM_DEBUG_DRIVER("Allocated pde space (%zdM) at GTT entry: %llx\n",
 			 ppgtt->node.size >> 20,
 			 ppgtt->node.start / PAGE_SIZE);
 
@@ -2747,7 +2747,7 @@ static int i915_gem_setup_global_gtt(struct drm_device *dev,
 	list_for_each_entry(obj, &dev_priv->mm.bound_list, global_list) {
 		struct i915_vma *vma = i915_gem_obj_to_vma(obj, ggtt_vm);
 
-		DRM_DEBUG_KMS("reserving preallocated space: %zx + %zx\n",
+		DRM_DEBUG_KMS("reserving preallocated space: %llx + %zx\n",
 			      i915_gem_obj_ggtt_offset(obj), obj->base.size);
 
 		WARN_ON(i915_gem_obj_ggtt_bound(obj));
@@ -3103,7 +3103,7 @@ static int gen6_gmch_probe(struct drm_device *dev,
 	 * a coarse sanity check.
 	 */
 	if ((*mappable_end < (64<<20) || (*mappable_end > (512<<20)))) {
-		DRM_ERROR("Unknown GMADR size (%zx)\n",
+		DRM_ERROR("Unknown GMADR size (%llx)\n",
 			  dev_priv->gtt.mappable_end);
 		return -ENXIO;
 	}
@@ -3214,7 +3214,7 @@ int i915_gem_gtt_init(struct drm_device *dev)
 		goto out_gtt_cleanup;
 
 	/* GMADR is the PCI mmio aperture into the global GTT. */
-	DRM_INFO("Memory usable by graphics device = %zuM\n",
+	DRM_INFO("Memory usable by graphics device = %lluM\n",
 		 gtt->base.total >> 20);
 	DRM_DEBUG_DRIVER("GMADR size = %zdM\n", gtt->mappable_end >> 20);
 	DRM_DEBUG_DRIVER("GTT stolen size = %zdM\n", gtt->stolen_size >> 20);

@@ -1370,7 +1370,7 @@ int drm_legacy_mapbufs(struct drm_device *dev, void *data,
 	struct drm_device_dma *dma = dev->dma;
 	int retcode = 0;
 	const int zero = 0;
-	unsigned long virtual;
+	vm_offset_t virtual;
 	unsigned long address;
 	struct vmspace *vms;
 	struct drm_buf_map *request = data;

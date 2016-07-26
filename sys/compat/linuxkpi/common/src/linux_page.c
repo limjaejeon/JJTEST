@@ -39,6 +39,7 @@ __FBSDID("$FreeBSD$");
 #include <sys/proc.h>
 #include <sys/sched.h>
 #include <sys/sf_buf.h>
+#include <sys/queue.h>
 
 #include <linux/page.h>
 #include <linux/io.h>
@@ -66,6 +67,12 @@ __FBSDID("$FreeBSD$");
 
 #include <asm/smp.h>
 
+#ifdef __TOS_BP_11
+#ifndef VM_OBJECT_WOWNED
+#define VM_OBJECT_WOWNED(object)
+    rw_wowned(&(object)->lock)
+#endif
+#endif
 
 extern u_int	cpu_feature;
 extern u_int	cpu_stdext_feature;
@@ -279,115 +286,6 @@ vunmap(void *addr)
 	kfree(vmmap);
 }
 
-#if defined(__LP64__)
-
-
-
-void *
-kmap(vm_page_t page)
-{
-	vm_offset_t daddr;
-
-	daddr = PHYS_TO_DMAP(VM_PAGE_TO_PHYS(page));
-
-	return ((void *)daddr);
-}
-
-void *
-kmap_atomic_prot(vm_page_t page, pgprot_t prot)
-{
-	vm_memattr_t attr = pgprot2cachemode(prot);
-
-	sched_pin();
-	if (attr != VM_MEMATTR_DEFAULT) {
-		vm_page_lock(page);
-		page->flags |= PG_FICTITIOUS;
-		vm_page_unlock(page);
-		pmap_page_set_memattr(page, attr);
-	}
-	return (kmap(page));
-}
-
-void *
-kmap_atomic(vm_page_t page)
-{
-
-	return (kmap_atomic_prot(page, VM_PROT_ALL));
-}
-
-void
-kunmap(vm_page_t page)
-{
-
-}
-
-void
-kunmap_atomic(void *vaddr)
-{
-	sched_unpin();
-}
-
-
-#else
-
-static struct sf_buf *
-vtosf(caddr_t vaddr)
-{
-	panic("IMPLEMENT ME!!!");
-	return (NULL);
-}
-
-static struct sf_buf *
-pagetosf(vm_page_t page)
-{
-	panic("IMPLEMENT ME!!!");
-	return (NULL);
-}
-
-void *
-kmap(vm_page_t page)
-{
-	struct sf_buf *sf;
-
-	sf = sf_buf_alloc(page, SFB_NOWAIT | SFB_CPUPRIVATE);
-	if (sf == NULL) {
-		sched_unpin();
-		return (-EFAULT);
-	}
-	return (char *)sf_buf_kva(sf);
-}
-
-void *
-kmap_atomic(vm_page_t page)
-{
-	caddr_t vaddr;
-
-	sched_pin();
-	if ((vaddr = kmap(page)) == NULL)
-		sched_unpin();
-	return (vaddr);
-}
-	
-void
-kunmap(vm_page_t page)
-{
-	struct sf_buf *sf;
-
-	sf = pagetosf(page);
-	sf_buf_free(sf);
-}
-
-void
-kunmap_atomic(caddr_t vaddr)
-{
-
-	struct sf_buf *sf;
-
-	sf = vtosf(vaddr);
-	sf_buf_free(sf);
-	sched_unpin();
-}
-#endif
 
 void
 page_cache_release(vm_page_t page)

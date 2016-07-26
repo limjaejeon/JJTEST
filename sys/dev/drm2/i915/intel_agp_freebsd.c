@@ -18,7 +18,7 @@ __FBSDID("$FreeBSD$");
 #include <drm/drm_crtc_helper.h>
 
 void *intel_gtt_get_registers(void);
-void _intel_gtt_get(size_t *gtt_total, size_t *stolen_size, unsigned long *mappable_end);
+void _intel_gtt_get(u64 *gtt_total, size_t *stolen_size, u64 *mappable_end);
 void _intel_gtt_install_pte(unsigned int index, vm_paddr_t addr, unsigned int flags);
 uint32_t intel_gtt_read_pte(unsigned int entry);
 
@@ -70,14 +70,14 @@ static struct _intel_private {
 #endif
 
 void
-intel_gtt_get(size_t *gtt_total, size_t *stolen_size,
-		  bus_addr_t *mappable_base, unsigned long *mappable_end)
+intel_gtt_get(u64 *gtt_total, size_t *stolen_size,
+		  phys_addr_t *mappable_base, u64 *mappable_end)
 
 {
 	_intel_gtt_get(gtt_total, stolen_size, mappable_end);	
 	*mappable_base = intel_private.gma_bus_addr;
-	DRM_DEBUG("gtt_total %lx, stolen_size %lx, mappable_end %lx gma_bus_addr %lx\n",
-		  *gtt_total, *stolen_size, *mappable_end, *mappable_base);
+	DRM_DEBUG("gtt_total %llx, stolen_size %zx, mappable_end %llx gma_bus_addr %llx\n",
+		  *gtt_total, *stolen_size, *mappable_end, (u64) *mappable_base);
 }
 
 bool
@@ -139,7 +139,7 @@ intel_gmch_probe(struct pci_dev *bridge_pdev, struct pci_dev *gpu_pdev,
 	DRM_DEBUG("entering %s\n", __func__);
 	intel_private.registers = intel_gtt_get_registers();
 	intel_private.gma_bus_addr = pci_bus_address(gpu_pdev, I915_GMADR_BAR);
-	DRM_DEBUG("bus_addr %lx\n", intel_private.gma_bus_addr);
+	DRM_DEBUG("bus_addr %llx\n", (u64) intel_private.gma_bus_addr);
 	INTEL_GTT_GEN = 4;
 	/* save the PGTBL reg for resume */
 	intel_private.PGTBL_save =

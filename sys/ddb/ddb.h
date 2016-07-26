@@ -93,7 +93,7 @@ extern vm_offset_t ksymtab, kstrtab, ksymtab_size;
  *   without any argument to get a list.
  */
 struct command;
-LIST_HEAD(command_table, command);
+DDB_LIST_HEAD(command_table, command);
 extern struct command_table db_cmd_table;
 extern struct command_table db_show_table;
 extern struct command_table db_show_all_table;

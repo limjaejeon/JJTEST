@@ -54,6 +54,7 @@ typedef struct {
 #define	atomic64_dec_return(v)		atomic64_sub_return(1, (v))
 #define	atomic64_inc_not_zero(v)	atomic64_add_unless((v), 1, 0)
 
+#ifndef __TOS_BP_11
 static inline int64_t
 atomic64_add_return(int64_t i, atomic64_t *v)
 {
@@ -65,6 +66,7 @@ atomic64_sub_return(int64_t i, atomic64_t *v)
 {
 	return atomic_fetchadd_64(&v->counter, -i) - i;
 }
+#endif
 
 static inline void
 atomic64_set(atomic64_t *v, int64_t i)
@@ -78,6 +80,7 @@ atomic64_read(atomic64_t *v)
 	return atomic_load_acq_64(&v->counter);
 }
 
+#ifndef __TOS_BP_11
 static inline int64_t
 atomic64_inc(atomic64_t *v)
 {
@@ -89,6 +92,7 @@ atomic64_dec(atomic64_t *v)
 {
 	return atomic_fetchadd_64(&v->counter, -1) - 1;
 }
+#endif
 
 static inline int64_t
 atomic64_add_unless(atomic64_t *v, int64_t a, int64_t u)

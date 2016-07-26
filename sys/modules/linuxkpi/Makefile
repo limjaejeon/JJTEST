@@ -27,6 +27,7 @@ SRCS=	interval_tree.c \
 	linux_sysfs.c \
 	linux_usb.c \
 	linux_video.c \
+	linux_kmap.c \
 	linux_work.c
 
 SRCS+=	bus_if.h \
@@ -47,3 +48,6 @@ CFLAGS+= -O0
 CWARNFLAGS 		+= -Wno-pointer-arith
 CWARNFLAGS.linux_string.c=	-Wno-cast-qual
 CWARNFLAGS.linux_acpi.c=	-Wno-cast-qual
+CWARNFLAGS +=	-Wno-cast-qual
+
+CFLAGS += -D__TOS_BP_11

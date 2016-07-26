@@ -106,3 +106,5 @@ CWARNFLAGS.drm_mipi_dsi.c+=	-Wno-incompatible-pointer-types-discards-qualifiers 
 CWARNFLAGS.drm_cache.c+=	-Wno-int-conversion
 CWARNFLAGS.drm_scatter.c+=	-Wno-int-conversion
 .include <bsd.kmod.mk>
+
+CFLAGS += -D__TOS_BP_11

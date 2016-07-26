@@ -783,7 +783,7 @@ static u64 drm_mm_debug_hole(struct drm_mm_node *entry,
 		hole_start = drm_mm_hole_node_start(entry);
 		hole_end = drm_mm_hole_node_end(entry);
 		hole_size = hole_end - hole_start;
-		pr_debug("%s %#zx-%#zx: %zu: free\n", prefix, hole_start,
+		pr_debug("%s %#llx-%#llx: %llu: free\n", prefix, hole_start,
 			 hole_end, hole_size);
 		return hole_size;
 	}
@@ -804,14 +804,14 @@ void drm_mm_debug_table(struct drm_mm *mm, const char *prefix)
 	total_free += drm_mm_debug_hole(&mm->head_node, prefix);
 
 	drm_mm_for_each_node(entry, mm) {
-		pr_debug("%s %#zx-%#zx: %zu: used\n", prefix, entry->start,
+		pr_debug("%s %#llx-%#llx: %llu: used\n", prefix, entry->start,
 			 entry->start + entry->size, entry->size);
 		total_used += entry->size;
 		total_free += drm_mm_debug_hole(entry, prefix);
 	}
 	total = total_free + total_used;
 
-	pr_debug("%s total: %zu, used %zu free %zu\n", prefix, total,
+	pr_debug("%s total: %llu, used %llu free %llu\n", prefix, total,
 		 total_used, total_free);
 }
 EXPORT_SYMBOL(drm_mm_debug_table);

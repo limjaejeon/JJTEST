@@ -45,6 +45,10 @@ linux_msleep(int ms)
 #undef msleep
 #define	msleep	linux_msleep
 
+#define udelay(t)   DELAY(MAX(t,3))
+
+#ifndef __TOS_BP_11
+#if 0
 /* undefined */
 extern void linux_bad_udelay(void);
 
@@ -115,8 +119,8 @@ linux_udelay(unsigned long usecs)
 			linux_udelay(n);				\
 		}							\
 	})
-
-
+#endif
+#endif
 
 
 static inline void

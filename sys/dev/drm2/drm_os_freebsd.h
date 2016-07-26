@@ -309,4 +309,12 @@ static inline int vga_switcheroo_get_client_state(struct pci_dev *pdev) { return
 extern	u_int	cpu_clflush_line_size;
 
 
+#ifndef __LP64__
+static inline u64 readq(void __iomem *reg)
+{
+        return ((u64) readl(reg)) | (((u64) readl(reg + 4UL)) << 32);
+}
+#endif
+
+
 #endif /* _DRM_OS_FREEBSD_H_ */

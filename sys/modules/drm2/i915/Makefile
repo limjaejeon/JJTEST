@@ -8,6 +8,11 @@ _i915kms=	i915kms
 _i915kmsfw=	i915kmsfw
 .endif
 
+.if ${MACHINE_CPUARCH} == "i386"
+_i915kms=	i915kms
+_i915kmsfw=	i915kmsfw
+.endif
+
 SUBDIR = \
         ${_i915kms} \
         ${_i915kmsfw}

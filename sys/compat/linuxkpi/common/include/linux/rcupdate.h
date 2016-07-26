@@ -41,7 +41,15 @@ void call_rcu(struct rcu_head *ptr, rcu_callback_t func);
 void rcu_barrier(void);
 void __rcu_read_lock(void);
 void __rcu_read_unlock(void);
-void synchronize_rcu(void);
+
+extern struct sx linux_global_lock;
+
+static inline void
+synchronize_rcu(void)
+{
+	sx_xlock(&linux_global_lock);
+	sx_xunlock(&linux_global_lock);
+}
 
 
 static inline void

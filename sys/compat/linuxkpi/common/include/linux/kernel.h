@@ -110,6 +110,7 @@
 } while (0)
 
 extern int linux_db_trace;
+/*
 #ifdef DDB
 extern void db_trace_self_depth(int);
 #define BACKTRACE()				\
@@ -119,8 +120,11 @@ extern void db_trace_self_depth(int);
 	} while (0);
 
 #else
-#define BACKTRACE()
+#define BACKTRACE() do {} while (0);
 #endif
+*/
+
+#define BACKTRACE() do {} while (0);
 
 #define	WARN_ON(cond) ({					\
       static bool __bt_on_once;				        \

@@ -631,7 +631,7 @@ pci_map_rom(struct pci_dev *pdev, size_t *size)
 	pdev->pcir.rid[LINUXKPI_BIOS] = rid;
 	pdev->pcir.type[LINUXKPI_BIOS] = SYS_RES_MEMORY;
 	pdev->pcir.map[LINUXKPI_BIOS] = rman_get_virtual(res);
-	device_printf(dev, "bios size %lx bios addr %p\n", rman_get_size(res), rman_get_virtual(res));
+	device_printf(dev, "bios size %llx bios addr %p\n", rman_get_size(res), rman_get_virtual(res));
 	*size = rman_get_size(res);
 	return (rman_get_virtual(res));
 }

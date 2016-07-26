@@ -3298,7 +3298,7 @@ static int framebuffer_check(const struct drm_mode_fb_cmd2 *r)
 		}
 
 		if (r->modifier[i] && !(r->flags & DRM_MODE_FB_MODIFIERS)) {
-			DRM_DEBUG_KMS("bad fb modifier %zu for plane %d\n",
+			DRM_DEBUG_KMS("bad fb modifier %llu for plane %d\n",
 				      r->modifier[i], i);
 			return -EINVAL;
 		}

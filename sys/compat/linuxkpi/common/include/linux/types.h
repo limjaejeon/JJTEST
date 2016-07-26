@@ -59,7 +59,7 @@ typedef uint64_t __be64;
 
 typedef unsigned int    uint;
 typedef unsigned gfp_t;
-typedef uint64_t loff_t;
+typedef unsigned long long loff_t;
 typedef vm_paddr_t resource_size_t;
 
 typedef u64 phys_addr_t;
@@ -73,7 +73,7 @@ typedef struct {
 	int counter;
 } atomic_t;
 
-#define pgoff_t unsigned long
+#define pgoff_t unsigned long long
 
 struct callback_head {
 	struct callback_head *next;

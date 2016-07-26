@@ -1728,7 +1728,7 @@ i915_gem_mmap_ioctl(struct drm_device *dev, void *data,
 {
 	struct drm_i915_gem_mmap *args = data;
 	struct drm_gem_object *obj;
-	unsigned long addr;
+	vm_offset_t addr;
 #ifndef __linux__
 	vm_object_t vmobj;
 	struct proc *p;
@@ -3608,7 +3608,7 @@ i915_gem_object_bind_to_vm(struct drm_i915_gem_object *obj,
 	 * attempt to find space.
 	 */
 	if (size > end) {
-		DRM_DEBUG("Attempting to bind an object (view type=%u) larger than the aperture: size=%zu > %s aperture=%zu\n",
+		DRM_DEBUG("Attempting to bind an object (view type=%u) larger than the aperture: size=%llu > %s aperture=%llu\n",
 			  ggtt_view ? ggtt_view->type : 0,
 			  size,
 			  flags & PIN_MAPPABLE ? "mappable" : "total",

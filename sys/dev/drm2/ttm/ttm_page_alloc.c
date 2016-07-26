@@ -172,12 +172,12 @@ static ssize_t ttm_pool_store(struct kobject *kobj,
 		m->options.small = val;
 	else if (attr == &ttm_page_pool_alloc_size) {
 		if (val > NUM_PAGES_TO_ALLOC*8) {
-			pr_err("Setting allocation size to %lu is not allowed. Recommended size is %lu\n",
+			pr_err("Setting allocation size to %zu is not allowed. Recommended size is %zu\n",
 			       NUM_PAGES_TO_ALLOC*(PAGE_SIZE >> 7),
 			       NUM_PAGES_TO_ALLOC*(PAGE_SIZE >> 10));
 			return size;
 		} else if (val > NUM_PAGES_TO_ALLOC) {
-			pr_warn("Setting allocation size to larger than %lu is not recommended\n",
+			pr_warn("Setting allocation size to larger than %zu is not recommended\n",
 				NUM_PAGES_TO_ALLOC*(PAGE_SIZE >> 10));
 		}
 		m->options.alloc_size = val;
