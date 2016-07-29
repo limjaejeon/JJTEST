@@ -113,7 +113,7 @@ interval_tree_remove(struct interval_tree_node *entry, struct rb_root *root)
 }
 
 struct interval_tree_node *
-interval_tree_iter_first(struct rb_root *root, unsigned long long start, unsigned long long end)
+interval_tree_iter_first(struct rb_root *root, unsigned long start, unsigned long end)
 {
 	struct interval_tree_node *node;
 
@@ -128,7 +128,7 @@ interval_tree_iter_first(struct rb_root *root, unsigned long long start, unsigne
 
 struct interval_tree_node *
 interval_tree_iter_next(struct interval_tree_node *node,
-			unsigned long long start, unsigned long long last)
+			unsigned long start, unsigned long last)
 {
 	struct interval_tree_node *cur, *prev, *r;
 
