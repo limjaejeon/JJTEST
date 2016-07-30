@@ -2232,7 +2232,7 @@ i915_gem_object_invalidate(struct drm_i915_gem_object *obj)
 		return;
 
 	mapping = file_inode(obj->base.filp)->i_mapping,
-	invalidate_mapping_pages(mapping, 0, (loff_t)-1);
+	invalidate_mapping_pages(mapping, 0, (pgoff_t)-1);
 }
 
 static void

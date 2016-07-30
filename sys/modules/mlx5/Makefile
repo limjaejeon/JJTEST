@@ -34,3 +34,4 @@ CFLAGS+= -I${.CURDIR}/../../contrib/ck/include
 .include <bsd.kmod.mk>
 
 CFLAGS+= -Wno-cast-qual -Wno-pointer-arith ${GCC_MS_EXTENSIONS}
+CFLAGS+= -D__TOS_BP_11
