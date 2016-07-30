@@ -81,6 +81,7 @@ struct poll_wqueues {
 	struct task_struct *polling_task;
 	int triggered;
 	int error;
+	int guard; // FIXME: see __wake_up_locked (wait.h)
 	int inline_index;
 	struct poll_table_entry inline_entries[N_INLINE_POLL_ENTRIES];
 };
@@ -166,6 +167,7 @@ poll_initwait(struct poll_wqueues *pwq)
 	pwq->error = 0;
 	pwq->table = NULL;
 	pwq->inline_index = 0;
+	pwq->guard = 33333331; // FIXME: see __wake_up_locked (wait.h)
 }
 
 static inline void
