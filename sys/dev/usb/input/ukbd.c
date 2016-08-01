@@ -2083,12 +2083,16 @@ ukbd_key2scan(struct ukbd_softc *sc, int code, int shift, int up)
 		0x79,	/* Keyboard Intl' 4 (Henkan) */
 		0x7b,	/* Keyboard Intl' 5 (Muhenkan) */
 		0x5c,	/* Keyboard Intl' 6 (Keypad ,) (For PC-9821 layout) */
-		0x71,   /* Apple Keyboard JIS (Kana) */
-		0x72,   /* Apple Keyboard JIS (Eisu) */
+		0xf2,	/* Hanyeong */
+		0xf1,	/* Hanja */
 	};
 
 	if ((code >= 89) && (code < (int)(89 + nitems(scan)))) {
 		code = scan[code - 89];
+	}
+	/* Disable release event of Hanyeong and Hanja keys */
+	if (((code == 0xf1) || (code == 0xf2)) && up) {
+		return (NOKEY);
 	}
 	/* Pause/Break */
 	if ((code == 104) && (!(shift & (MOD_CONTROL_L | MOD_CONTROL_R)))) {
