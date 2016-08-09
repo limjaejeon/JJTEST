@@ -97,8 +97,8 @@ SUBDIR=	\
 	de \
 	${_dpms} \
 	${_dpt} \
-	${_drm2} \
 	${_drm_old} \
+	${_drm} \
 	dummynet \
 	${_ed} \
 	${_elink} \
@@ -545,8 +545,8 @@ _cpuctl=	cpuctl
 _cpufreq=	cpufreq
 _cs=		cs
 _dpms=		dpms
-_drm2=		drm2
 _drm_old=	drm_old
+_drm=		drm2
 _ed=		ed
 _em=		em
 _ep=		ep
@@ -755,7 +755,7 @@ _wi=		wi
 .endif
 
 .if ${MACHINE_ARCH} == "powerpc64"
-_drm2=		drm2
+_drm=		drm2
 .endif
 
 .if ${MACHINE_CPUARCH} == "sparc64"
