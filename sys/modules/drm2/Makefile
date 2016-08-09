@@ -31,7 +31,7 @@ _amdgpukmsfw=	amdgpukmsfw
 .endif
 
 SUBDIR = \
-	drm2 \
+	drm \
 	amd \
 	${_i915kms} \
 	${_amdgpukmsfw} \
