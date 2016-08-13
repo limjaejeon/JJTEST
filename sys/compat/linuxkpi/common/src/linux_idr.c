@@ -311,6 +311,7 @@ idr_get(struct idr *idr)
 	if (il) {
 		idr->free = il->ary[0];
 		il->ary[0] = NULL;
+		bitmap_fill(&il->bitmap, IDR_SIZE); // TOS
 		return (il);
 	}
 	if (curthread->td_critnest == 0)
@@ -319,6 +320,7 @@ idr_get(struct idr *idr)
 		if ((il = DPCPU_GET(idr_preload_head)) != NULL) {
 			DPCPU_SET(idr_preload_head, il->ary[0]);
 			DPCPU_SET(idr_preload_cnt, DPCPU_GET(idr_preload_cnt) - 1);
+			il->ary[0] = NULL; // TOS
 		}
 	}
 	if (il != NULL)
