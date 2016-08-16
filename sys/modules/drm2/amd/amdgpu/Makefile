@@ -41,7 +41,6 @@ SRCS	= \
 	amdgpu_i2c.c \
 	amdgpu_ib.c \
 	amdgpu_ih.c \
-	amdgpu_ioc32.c \
 	amdgpu_irq.c \
 	amdgpu_job.c \
 	amdgpu_kms.c \
@@ -130,6 +129,10 @@ SRCS	= \
 	tonga_smumgr.c \
 	fiji_smumgr.c
 
+#.if ${MACHINE_CPUARCH} == "amd64"
+#SRCS    += 	amdgpu_ioc32.c
+#.endif
+
 
 CFLAGS+= 	-I${.CURDIR}/../../../../contrib/ck/include
 CFLAGS+=	-I${.CURDIR}/../../../../compat/linuxkpi/common/include
@@ -166,7 +169,7 @@ CWARNFLAGS.amdgpu_amdkfd_gfx_v7.c=	-Wno-cast-qual
 CWARNFLAGS.amdgpu_amdkfd_gfx_v8.c=	-Wno-cast-qual
 CWARNFLAGS.amdgpu_atpx_handler.c=	-Wno-missing-prototypes
 CWARNFLAGS.amdgpu_ih.c=	-Wno-cast-qual
-CWARNFLAGS.amdgpu_ioc32.c=	-Wno-missing-prototypes
+#CWARNFLAGS.amdgpu_ioc32.c=	-Wno-missing-prototypes
 CWARNFLAGS.amdgpu_object.c=	-Wno-format
 CWARNFLAGS.amdgpu_mn.c=		-Wno-unused-variable
 CWARNFLAGS.amdgpu_pll.c=	-Wno-missing-prototypes
@@ -207,3 +210,5 @@ CWARNFLAGS.tonga_processpptables.c=	-Wno-missing-prototypes -Wno-cast-qual
 CWARNFLAGS.tonga_thermal.c=	-Wno-missing-prototypes
 CWARNFLAGS.tonga_smumgr.c=	-Wno-missing-prototypes -Wno-cast-qual
 CWARNFLAGS.fiji_smumgr.c=	-Wno-missing-prototypes -Wno-cast-qual
+
+CWARNFLAGS += -Wno-cast-qual
