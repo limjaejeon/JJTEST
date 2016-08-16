@@ -7,7 +7,7 @@ SYSDIR?=${.CURDIR}/../..
 _i915kms=	i915
 #_radeonkms=	radeonkms
 . if ${MK_SOURCELESS_UCODE} != "no"
-#_amdgpukmsfw=	amdgpukmsfw
+_amdgpukmsfw=	amdgpukmsfw
 #_radeonkmsfw=	radeonkmsfw
 . endif
 .endif
@@ -17,7 +17,7 @@ _i915kms=	i915
 _i915kms=	i915
 #_radeonkms=	radeonkms
 .  if ${MK_SOURCELESS_UCODE} != "no"
-#_amdgpukmsfw=	amdgpukmsfw
+_amdgpukmsfw=	amdgpukmsfw
 #_radeonkmsfw=	radeonkmsfw
 .  endif
 . endif
@@ -34,7 +34,7 @@ SUBDIR = \
 	drm2 \
 	amd \
 	${_i915kms} \
-#	${_amdgpukmsfw} \
+	${_amdgpukmsfw} \
 #	${_radeonkmsfw} \
 #	${_radeonkms}
 

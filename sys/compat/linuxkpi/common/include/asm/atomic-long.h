@@ -34,7 +34,6 @@
 #include <sys/cdefs.h>
 #include <sys/types.h>
 #include <machine/atomic.h>
-#include <asm/atomic64.h>
 
 #if BITS_PER_LONG == 64
 
@@ -47,13 +46,7 @@ typedef atomic64_t atomic_long_t;
 
 #else
 
-//#ifdef __TOS_BP_11
-typedef struct{
-    volatile long counter;
-} atomic_long_t;
-//#else
-//typedef atomic_t atomic_long_t;
-//#endif
+typedef atomic_t atomic_long_t;
 
 #define ATOMIC_LONG_INIT(i)	ATOMIC_INIT(i)
 #define ATOMIC_LONG_PFX(x)	atomic ## x
@@ -66,6 +59,8 @@ typedef struct{
 #define	atomic_long_add(i, v)		atomic_long_add_return((i), (v))
 #define	atomic_long_inc_return(v)	atomic_long_add_return(1, (v))
 #define	atomic_long_inc_not_zero(v)	atomic_long_add_unless((v), 1, 0)
+
+#ifdef __LP64__
 
 static inline long
 atomic_long_add_return(long i, atomic_long_t *v)
@@ -118,5 +113,61 @@ atomic_long_dec_and_test(atomic_long_t *v)
 	long i = atomic_long_add(-1, v);
 	return i == 0 ;
 }
+
+#else
+
+static inline long
+atomic_long_add_return(long i, atomic_long_t *v)
+{
+	return i + atomic_fetchadd_int(&v->counter, i);
+}
+
+static inline void
+atomic_long_set(atomic_long_t *v, long i)
+{
+	atomic_store_rel_int(&v->counter, i);
+}
+
+static inline long
+atomic_long_read(atomic_long_t *v)
+{
+	return atomic_load_acq_int(&v->counter);
+}
+
+static inline long
+atomic_long_inc(atomic_long_t *v)
+{
+	return atomic_fetchadd_int(&v->counter, 1) + 1;
+}
+
+static inline long
+atomic_long_dec(atomic_long_t *v)
+{
+	return atomic_fetchadd_int(&v->counter, -1) - 1;
+}
+
+static inline int
+atomic_long_add_unless(atomic_long_t *v, long a, long u)
+{
+	long c;
+
+	for (;;) {
+		c = atomic_long_read(v);
+		if (unlikely(c == u))
+			break;
+		if (likely(atomic_cmpset_int(&v->counter, c, c + a)))
+			break;
+	}
+	return (c != u);
+}
+
+static inline long
+atomic_long_dec_and_test(atomic_long_t *v)
+{
+	long i = atomic_long_add(-1, v);
+	return i == 0 ;
+}
+
+#endif /* __LP64__ */
 
 #endif	/* _ATOMIC_LONG_H_ */
