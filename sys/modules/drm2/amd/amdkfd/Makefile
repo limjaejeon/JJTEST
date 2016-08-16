@@ -61,3 +61,5 @@ CWARNFLAGS.kfd_device_queue_manager.c=	-Wno-format
 CWARNFLAGS.kfd_doorbell.c=	-Wno-format
 CWARNFLAGS.kfd_packet_manager.c=	-Wno-format
 CWARNFLAGS.kfd_queue.c=	-Wno-format
+
+CWARNFLAGS += -Wno-cast-qual

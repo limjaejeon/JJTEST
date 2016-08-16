@@ -18,14 +18,10 @@ local_irq_enable(void)
 static inline unsigned long
 local_save_flags(void)
 {
-#ifndef __TOS_BP_11
-    return (read_rflags());
-#else
 #ifdef __LP64__
     return (read_rflags());
 #else
     return (read_eflags());
-#endif
 #endif
 }
 

@@ -98,6 +98,7 @@ SUBDIR=	\
 	${_dpms} \
 	${_dpt} \
 	${_drm2} \
+	${_drm_old} \
 	dummynet \
 	${_ed} \
 	${_elink} \
@@ -545,6 +546,7 @@ _cs=		cs
 _dpms=		dpms
 #_drm=		drm
 _drm2=		drm2
+_drm_old=	drm_old
 _ed=		ed
 _em=		em
 _ep=		ep
