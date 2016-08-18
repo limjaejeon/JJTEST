@@ -2306,8 +2306,8 @@ wait_scrn_saver_stop(sc_softc_t *sc)
 void
 sc_touch_scrn_saver(void)
 {
-    scsplash_stick(FALSE);
-    run_scrn_saver = FALSE;
+    //scsplash_stick(FALSE);
+    //run_scrn_saver = FALSE;
 }
 
 int
@@ -3544,8 +3544,8 @@ next_code:
 		     * to be invoked explicitly. XXX
 		     */
 		    if (sc->flags & SC_SCRN_BLANKED) {
-			scsplash_stick(FALSE);
-			stop_scrn_saver(sc, current_saver);
+//			scsplash_stick(FALSE);
+//			stop_scrn_saver(sc, current_saver);
 		    } else {
 			if (!ISGRAPHSC(scp)) {
 			    scsplash_stick(TRUE);
