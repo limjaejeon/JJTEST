@@ -201,8 +201,8 @@ SUBDIR=	\
 	libiconv \
 	libmbpool \
 	libmchain \
+	${_lindebugfs} \
 	${_linprocfs} \
-	${_linsysfs} \
 	${_linux} \
 	${_linux_common} \
 	${_linux64} \
@@ -545,7 +545,6 @@ _cpuctl=	cpuctl
 _cpufreq=	cpufreq
 _cs=		cs
 _dpms=		dpms
-#_drm=		drm
 _drm2=		drm2
 _drm_old=	drm_old
 _ed=		ed
@@ -566,8 +565,8 @@ _iser=		iser
 .endif
 _ix=		ix
 _ixv=		ixv
+_lindebugfs=	lindebugfs
 _linprocfs=	linprocfs
-_linsysfs=	linsysfs
 _linux=		linux
 _nctgpio=	nctgpio
 _ndis=		ndis

@@ -13,6 +13,8 @@ __FBSDID("$FreeBSD$");
 #include <sys/priv.h>
 #include <sys/smp.h>
 
+#include "drm_os_config.h"
+
 #include <linux/kernel.h>
 #include <asm/uaccess.h>
 #include <linux/delay.h>
@@ -23,6 +25,8 @@ __FBSDID("$FreeBSD$");
 #define DRM_DEV_MODE	(S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP)
 #define DRM_DEV_UID	UID_ROOT
 #define DRM_DEV_GID	GID_VIDEO
+
+extern const char *fb_mode_option;
 
 struct vt_kms_softc {
 	struct drm_fb_helper    *fb_helper;
@@ -176,22 +180,6 @@ __copy_from_user_inatomic(void *to, const void __user *from,
     __copy_from_user_inatomic((to), (from), (n))
 
 
-enum __drm_capabilities {
-	CAP_SYS_ADMIN
-};
-
-static inline bool
-capable(enum __drm_capabilities cap)
-{
-
-	switch (cap) {
-	case CAP_SYS_ADMIN:
-		return DRM_SUSER(curthread);
-	default:
-		panic("%s: unhandled capability: %0x", __func__, cap);
-		return (false);
-	}
-}
 #define	sigemptyset(set)	SIGEMPTYSET(set)
 #define	sigaddset(set, sig)	SIGADDSET(set, sig)
 
@@ -215,42 +203,6 @@ typedef struct drm_pci_id_list
 	char *name;
 } drm_pci_id_list_t;
 
-#ifdef notyet
-#define CONFIG_COMPAT COMPAT_FREEBSD32
-#endif
-#ifdef notyet
-#define CONFIG_MMU_NOTIFIER 1
-#endif
-#ifdef __i386__
-#define	CONFIG_X86	1
-#endif
-#ifdef __amd64__
-#define	CONFIG_X86	1
-#define	CONFIG_X86_64	1
-#endif
-#ifdef __ia64__
-#define	CONFIG_IA64	1
-#endif
-
-#if defined(__i386__) || defined(__amd64__)
-#define CONFIG_PCI
-#define	CONFIG_ACPI
-#define	CONFIG_DRM_I915_KMS
-#undef	CONFIG_INTEL_IOMMU
-#endif
-
-#ifdef COMPAT_FREEBSD32
-#define	CONFIG_COMPAT
-#endif
-
-#define	CONFIG_AGP	1
-#define	CONFIG_MTRR	1
-
-#define	CONFIG_FB	1
-extern const char *fb_mode_option;
-
-#undef	CONFIG_DEBUG_FS
-#undef	CONFIG_VGA_CONSOLE
 
 #define	console_lock()
 #define	console_unlock()
@@ -305,8 +257,6 @@ static inline int vga_switcheroo_get_client_state(struct pci_dev *pdev) { return
 #define do_gettimeofday microtime
 #define acpi_video_register()
 #define acpi_video_unregister()
-#define class_create_file(a, b)
-#define class_destroy_file(a, b)
 
 #define CONFIG_X86_PAT
 extern	u_int	cpu_clflush_line_size;

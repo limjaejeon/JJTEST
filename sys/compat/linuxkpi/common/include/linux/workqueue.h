@@ -129,6 +129,12 @@ extern struct workqueue_struct *system_power_efficient_wq;
 extern struct workqueue_struct *system_freezable_power_efficient_wq;
 
 
+
+static inline void __init_work(struct work_struct *work, int onstack) { }
+static inline void destroy_work_on_stack(struct work_struct *work) { }
+static inline void destroy_delayed_work_on_stack(struct delayed_work *work) { }
+static inline unsigned int work_static(struct work_struct *work) { return 0; }
+
 extern void linux_work_fn(void *, int);
 extern void linux_flush_fn(void *, int);
 extern void linux_delayed_work_timer_fn(unsigned long __data);
@@ -156,6 +162,8 @@ do {									\
 	TASK_INIT(&(work)->work_task, 0, linux_work_fn, (work));	\
 } while (0)
 
+#define INIT_WORK_ONSTACK INIT_WORK
+
 #define	INIT_DELAYED_WORK(_work, func)					\
 do {									\
 	INIT_WORK(&(_work)->work, func);				\
@@ -169,6 +177,9 @@ do {									\
 
 #define work_pending(work) \
 	test_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))
+
+#define delayed_work_pending(w) \
+	work_pending(&(w)->work)
 
 static inline int
 queue_work(struct workqueue_struct *wq, struct work_struct *work)
