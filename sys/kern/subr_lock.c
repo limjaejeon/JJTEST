@@ -54,6 +54,7 @@ __FBSDID("$FreeBSD$");
 #include <ddb/ddb.h>
 #endif
 
+#include <machine/cpu.h>
 #include <machine/cpufunc.h>
 
 CTASSERT(LOCK_CLASS_MAX == 15);
