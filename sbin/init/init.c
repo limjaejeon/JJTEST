@@ -602,6 +602,8 @@ open_console(void)
 	 * Try to open /dev/console.  Open the device with O_NONBLOCK to
 	 * prevent potential blocking on a carrier.
 	 */
+	/*
+	 * i dont want to open console.!
 	revoke(_PATH_CONSOLE);
 	if ((fd = open(_PATH_CONSOLE, O_RDWR | O_NONBLOCK)) != -1) {
 		(void)fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) & ~O_NONBLOCK);
@@ -609,7 +611,7 @@ open_console(void)
 			return;
 		close(fd);
 	}
-
+	*/
 	/* No luck.  Log output to file if possible. */
 	if ((fd = open(_PATH_DEVNULL, O_RDWR)) == -1) {
 		stall("cannot open null device.");
@@ -1058,7 +1060,7 @@ run_script(const char *script)
 
 		char _sh[]		= "sh";
 		char _autoboot[]	= "autoboot";
-
+		
 		argv[0] = _sh;
 		argv[1] = __DECONST(char *, script);
 		argv[2] = runcom_mode == AUTOBOOT ? _autoboot : 0;

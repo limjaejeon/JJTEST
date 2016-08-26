@@ -30,9 +30,9 @@
 #	@(#)newvers.sh	8.1 (Berkeley) 4/20/94
 # $FreeBSD$
 
-TYPE="FreeBSD"
-REVISION="11.0"
-BRANCH="BETA3"
+TYPE="TmaxOS"
+REVISION="2.0"
+BRANCH="TmaxOS_RELEASE"
 if [ -n "${BRANCH_OVERRIDE}" ]; then
 	BRANCH=${BRANCH_OVERRIDE}
 fi
