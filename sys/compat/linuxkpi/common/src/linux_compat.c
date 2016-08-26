@@ -229,8 +229,15 @@ clear_user(void *uptr, unsigned long len)
 	iter = len / 8;
 
 	for (i = 0; i < iter; i++) {
-		if (suword64(((uint64_t *)uptr) + iter, 0))
+#ifdef __LP64__
+		if (suword64(((uint64_t *)uptr) + i, 0))
 			return (len);
+#else
+		if (suword32(((uint32_t *)uptr) + 2*i, 0))
+			return (len);
+		if (suword32(((uint32_t *)uptr) + 2*i + 1, 0))
+			return (len);
+#endif
 	}
 	for (i = 0; i < rem; i++) {
 		if (subyte(((uint8_t *)uptr) + iter*8 + i , 0))
