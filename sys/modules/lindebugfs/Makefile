@@ -9,5 +9,6 @@ SRCS=	vnode_if.h \
 
 CFLAGS+= -I${.CURDIR}/../../compat/linuxkpi/common/include
 CFLAGS+= -I${.CURDIR}/../../contrib/ck/include
+CWARNFLAGS += -Wno-cast-qual -Wno-pointer-sign
 
 .include <bsd.kmod.mk>
