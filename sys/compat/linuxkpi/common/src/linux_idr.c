@@ -331,6 +331,7 @@ idr_get(struct idr *idp)
 		if ((il = DPCPU_GET(idr_preload_head)) != NULL) {
 			DPCPU_SET(idr_preload_head, il->ary[0]);
 			DPCPU_SET(idr_preload_cnt, DPCPU_GET(idr_preload_cnt) - 1);
+			il->ary[0] = NULL; // TOS
 		}
 	}
 done:
