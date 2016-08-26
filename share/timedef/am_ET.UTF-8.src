@@ -50,20 +50,20 @@
 ቅዳሜ
 #
 # X_fmt
-%H:%M:%S
+%I:%M:%S %p
 #
 # x_fmt
 %d/%m/%Y
 #
 # c_fmt
-%a %b %e %X %Y
+%A %e %B %Y %I:%M:%S %p
 #
 # AM/PM
 ጥዋት
 ከሰዓት
 #
 # date_fmt
-%a %b %e %X %Z %Y
+%A %e %B %Y %I:%M:%S %p %Z
 #
 # Long month names (without case ending)
 ጃንዩወሪ

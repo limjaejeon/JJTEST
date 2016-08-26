@@ -53,17 +53,17 @@ sestdiena
 %H:%M:%S
 #
 # x_fmt
-%d/%m/%Y
+%d.%m.%y
 #
 # c_fmt
-%e. %b, %Y. gads %X
+%Y. gada %e. %B %H:%M:%S
 #
 # AM/PM
-
-
+priekðpusdienâ
+pçcpusdienâ
 #
 # date_fmt
-%A, %Y. gada %e. %B %T %Z
+%Y. gada %e. %B %H:%M:%S %Z
 #
 # Long month names (without case ending)
 janvâris
@@ -83,5 +83,5 @@ decembris
 dm
 #
 # ampm_fmt
-
+%I:%M:%S %p
 # EOF

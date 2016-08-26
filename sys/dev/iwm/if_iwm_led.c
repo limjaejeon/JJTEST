@@ -148,13 +148,13 @@ iwm_mvm_led_disable(struct iwm_softc *sc)
 	IWM_WRITE(sc, IWM_CSR_LED_REG, IWM_CSR_LED_REG_TURN_OFF);
 }
 
-static int
+int
 iwm_mvm_led_is_enabled(struct iwm_softc *sc)
 {
 	return (IWM_READ(sc, IWM_CSR_LED_REG) == IWM_CSR_LED_REG_TURN_ON);
 }
 
-static void
+void
 iwm_led_blink_timeout(void *arg)
 {
 	struct iwm_softc *sc = arg;
@@ -177,6 +177,6 @@ iwm_led_blink_start(struct iwm_softc *sc)
 void
 iwm_led_blink_stop(struct iwm_softc *sc)
 {
-	callout_stop(&sc->sc_led_blink_to);
+	callout_drain(&sc->sc_led_blink_to);
 	iwm_mvm_led_disable(sc);
 }

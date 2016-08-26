@@ -2322,7 +2322,11 @@ do_cpuid(u_int ax, u_int cx, u_int *p)
 
 #else
 #define cpuid(in, a, b, c, d) 
-#define do_cpuid(ax, cx, p)
+static __inline void
+do_cpuid(u_int ax, u_int cx, u_int *p)
+{
+}
+
 #endif
 
 static void

@@ -225,30 +225,18 @@ ipfw_table_handler(int ac, char *av[])
 		table_modify(&oh, ac, av);
 		break;
 	case TOK_DESTROY:
-		if (table_destroy(&oh) == 0)
-			break;
-		if (errno != ESRCH)
+		if (table_destroy(&oh) != 0)
 			err(EX_OSERR, "failed to destroy table %s", tablename);
-		/* ESRCH isn't fatal, warn if not quiet mode */
-		if (co.do_quiet == 0)
-			warn("failed to destroy table %s", tablename);
 		break;
 	case TOK_FLUSH:
 		if (is_all == 0) {
-			if ((error = table_flush(&oh)) == 0)
-				break;
-			if (errno != ESRCH)
+			if ((error = table_flush(&oh)) != 0)
 				err(EX_OSERR, "failed to flush table %s info",
-				    tablename);
-			/* ESRCH isn't fatal, warn if not quiet mode */
-			if (co.do_quiet == 0)
-				warn("failed to flush table %s info",
 				    tablename);
 		} else {
 			error = tables_foreach(table_flush_one, &oh, 1);
 			if (error != 0)
 				err(EX_OSERR, "failed to flush tables list");
-			/* XXX: we ignore errors here */
 		}
 		break;
 	case TOK_SWAP:
@@ -605,14 +593,14 @@ table_do_swap(ipfw_obj_header *oh, char *second)
 static int
 table_swap(ipfw_obj_header *oh, char *second)
 {
+	int error;
 
 	if (table_check_name(second) != 0)
 		errx(EX_USAGE, "table name %s is invalid", second);
 
-	if (table_do_swap(oh, second) == 0)
-		return (0);
+	error = table_do_swap(oh, second);
 
-	switch (errno) {
+	switch (error) {
 	case EINVAL:
 		errx(EX_USAGE, "Unable to swap table: check types");
 	case EFBIG:

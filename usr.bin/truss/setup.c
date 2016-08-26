@@ -223,10 +223,8 @@ add_threads(struct trussinfo *info, struct procinfo *p)
 		t = new_thread(p, lwps[i]);
 		if (ptrace(PT_LWPINFO, lwps[i], (caddr_t)&pl, sizeof(pl)) == -1)
 			err(1, "ptrace(PT_LWPINFO)");
-		if (pl.pl_flags & PL_FLAG_SCE) {
-			info->curthread = t;
+		if (pl.pl_flags & PL_FLAG_SCE)
 			enter_syscall(info, t, &pl);
-		}
 	}
 	free(lwps);
 }

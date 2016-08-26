@@ -53,17 +53,17 @@ szombat
 %H:%M:%S
 #
 # x_fmt
-%Y/%m/%d
+%Y. %m. %d.
 #
 # c_fmt
-%a %b %e %X %Y
+%Y. %B %e. %H:%M:%S
 #
 # AM/PM
 de.
 du.
 #
 # date_fmt
-%Y %b %e %a %X %Z
+%Y. %B %e. %H:%M:%S %Z
 #
 # Long month names (without case ending)
 január
@@ -83,5 +83,5 @@ december
 md
 #
 # ampm_fmt
-%I:%M:%S %p
+%p %I:%M:%S
 # EOF

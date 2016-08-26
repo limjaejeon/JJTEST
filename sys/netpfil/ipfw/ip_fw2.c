@@ -2489,7 +2489,7 @@ do {								\
 
 				set_match(args, f_pos, chain);
 				/* Check if this is 'global' nat rule */
-				if (cmd->arg1 == IP_FW_NAT44_GLOBAL) {
+				if (cmd->arg1 == 0) {
 					retval = ipfw_nat_ptr(args, NULL, m);
 					break;
 				}

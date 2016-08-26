@@ -53,17 +53,17 @@ sobota
 %H:%M:%S
 #
 # x_fmt
-%d.%m.%Y
+%d.%m.%y
 #
 # c_fmt
-%a %e %b %X %Y
+%A %e %B %Y, %H:%M:%S
 #
 # AM/PM
-
-
+dopoludnia
+odpoludnia
 #
 # date_fmt
-%a %e. %B %Y %X %Z
+%A %e %B %Y, %H:%M:%S %Z
 #
 # Long month names (without case ending)
 januára
@@ -83,5 +83,5 @@ decembra
 dm
 #
 # ampm_fmt
-
+%I:%M:%S %p
 # EOF

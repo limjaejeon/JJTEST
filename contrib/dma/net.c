@@ -372,13 +372,11 @@ deliver_to_host(struct qitem *it, struct mx_hostentry *host)
 		       host->host, host->addr, c, neterr); \
 		snprintf(errmsg, sizeof(errmsg), "%s [%s] did not like our %s:\n%s", \
 			 host->host, host->addr, c, neterr); \
-		error = -1; \
-		goto out; \
+		return (-1); \
 	} else if (res != exp) { \
 		syslog(LOG_NOTICE, "remote delivery deferred: %s [%s] failed after %s: %s", \
 		       host->host, host->addr, c, neterr); \
-		error = 1; \
-		goto out; \
+		return (1); \
 	}
 
 	/* Check first reply from remote host */
@@ -428,8 +426,7 @@ deliver_to_host(struct qitem *it, struct mx_hostentry *host)
 			syslog(LOG_ERR, "remote delivery failed:"
 					" SMTP login failed: %m");
 			snprintf(errmsg, sizeof(errmsg), "SMTP login to %s failed", host->host);
-			error = -1;
-			goto out;
+			return (-1);
 		}
 		/* SMTP login is not available, so try without */
 		else if (error > 0) {

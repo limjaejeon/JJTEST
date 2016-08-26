@@ -95,7 +95,6 @@ sctp_finish(void *unused __unused)
 {
 	sctp_pcb_finish();
 }
-
 VNET_SYSUNINIT(sctp, SI_SUB_PROTO_DOMAIN, SI_ORDER_FOURTH, sctp_finish, NULL);
 #endif
 
@@ -728,7 +727,7 @@ sctp_disconnect(struct socket *so)
 			    TAILQ_EMPTY(&asoc->sent_queue) &&
 			    (asoc->stream_queue_cnt == 0)) {
 				/* there is nothing queued to send, so done */
-				if ((*asoc->ss_functions.sctp_ss_is_user_msgs_incomplete) (stcb, asoc)) {
+				if (asoc->locked_on_sending) {
 					goto abort_anyway;
 				}
 				if ((SCTP_GET_STATE(asoc) != SCTP_STATE_SHUTDOWN_SENT) &&
@@ -777,8 +776,18 @@ sctp_disconnect(struct socket *so)
 				asoc->state |= SCTP_STATE_SHUTDOWN_PENDING;
 				sctp_timer_start(SCTP_TIMER_TYPE_SHUTDOWNGUARD, stcb->sctp_ep, stcb,
 				    netp);
-				if ((*asoc->ss_functions.sctp_ss_is_user_msgs_incomplete) (stcb, asoc)) {
-					asoc->state |= SCTP_STATE_PARTIAL_MSG_LEFT;
+				if (asoc->locked_on_sending) {
+					/* Locked to send out the data */
+					struct sctp_stream_queue_pending *sp;
+
+					sp = TAILQ_LAST(&asoc->locked_on_sending->outqueue, sctp_streamhead);
+					if (sp == NULL) {
+						SCTP_PRINTF("Error, sp is NULL, locked on sending is non-null strm:%d\n",
+						    asoc->locked_on_sending->stream_no);
+					} else {
+						if ((sp->length == 0) && (sp->msg_is_complete == 0))
+							asoc->state |= SCTP_STATE_PARTIAL_MSG_LEFT;
+					}
 				}
 				if (TAILQ_EMPTY(&asoc->send_queue) &&
 				    TAILQ_EMPTY(&asoc->sent_queue) &&
@@ -942,7 +951,7 @@ sctp_shutdown(struct socket *so)
 		    TAILQ_EMPTY(&asoc->send_queue) &&
 		    TAILQ_EMPTY(&asoc->sent_queue) &&
 		    (asoc->stream_queue_cnt == 0)) {
-			if ((*asoc->ss_functions.sctp_ss_is_user_msgs_incomplete) (stcb, asoc)) {
+			if (asoc->locked_on_sending) {
 				goto abort_anyway;
 			}
 			/* there is nothing queued to send, so I'm done... */
@@ -959,8 +968,19 @@ sctp_shutdown(struct socket *so)
 			 * SHUTDOWN_PENDING.
 			 */
 			SCTP_ADD_SUBSTATE(asoc, SCTP_STATE_SHUTDOWN_PENDING);
-			if ((*asoc->ss_functions.sctp_ss_is_user_msgs_incomplete) (stcb, asoc)) {
-				SCTP_ADD_SUBSTATE(asoc, SCTP_STATE_PARTIAL_MSG_LEFT);
+			if (asoc->locked_on_sending) {
+				/* Locked to send out the data */
+				struct sctp_stream_queue_pending *sp;
+
+				sp = TAILQ_LAST(&asoc->locked_on_sending->outqueue, sctp_streamhead);
+				if (sp == NULL) {
+					SCTP_PRINTF("Error, sp is NULL, locked on sending is non-null strm:%d\n",
+					    asoc->locked_on_sending->stream_no);
+				} else {
+					if ((sp->length == 0) && (sp->msg_is_complete == 0)) {
+						SCTP_ADD_SUBSTATE(asoc, SCTP_STATE_PARTIAL_MSG_LEFT);
+					}
+				}
 			}
 			if (TAILQ_EMPTY(&asoc->send_queue) &&
 			    TAILQ_EMPTY(&asoc->sent_queue) &&

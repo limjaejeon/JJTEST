@@ -24,7 +24,7 @@
 .\"
 .\" $FreeBSD$
 .\"
-.Dd August 19, 2016
+.Dd July 21, 2016
 .Dt AIO_MLOCK 2
 .Os
 .Sh NAME
@@ -67,7 +67,7 @@ then the call returns without having enqueued the request.
 .Pp
 The
 .Fa iocb->aio_sigevent
-structure can be used to request notification of the operation's
+structure can be used to request notification of the request's
 completion as described in
 .Xr aio 4 .
 .Sh RESTRICTIONS
@@ -77,6 +77,8 @@ and the buffer that the
 .Fa iocb->aio_buf
 member of that structure references must remain valid until the
 operation has completed.
+For this reason, use of auto (stack) variables
+for these objects is discouraged.
 .Pp
 The asynchronous I/O control buffer
 .Fa iocb
@@ -85,8 +87,8 @@ should be zeroed before the
 call to avoid passing bogus context information to the kernel.
 .Pp
 Modifications of the Asynchronous I/O Control Block structure or the
-memory mapping described by the virtual address range are not allowed
-while the request is queued.
+buffer contents after the request has been enqueued, but before the
+request has completed, are not allowed.
 .Sh RETURN VALUES
 .Rv -std aio_mlock
 .Sh ERRORS

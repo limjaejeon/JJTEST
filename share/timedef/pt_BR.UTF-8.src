@@ -53,17 +53,17 @@ sábado
 %H:%M:%S
 #
 # x_fmt
-%d/%m/%Y
+%d/%m/%y
 #
 # c_fmt
-%a %e %b %X %Y
+%e de %B de %Y %H:%M:%S
 #
 # AM/PM
-
-
+AM
+PM
 #
 # date_fmt
-%a %e %b %Y %X %Z
+%e de %B de %Y %H:%M:%S %Z
 #
 # Long month names (without case ending)
 janeiro
@@ -83,5 +83,5 @@ dezembro
 dm
 #
 # ampm_fmt
-
+%I:%M:%S %p
 # EOF

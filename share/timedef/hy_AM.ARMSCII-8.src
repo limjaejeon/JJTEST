@@ -53,17 +53,17 @@
 %H:%M:%S
 #
 # x_fmt
-%d.%m.%Y
+%d.%m.%y
 #
 # c_fmt
-%A, %e %B %Y «. %X
+%d %B, %Y√. %H:%M:%S,
 #
 # AM/PM
-
-
+œªÎ˚Ò«Û ≥È≥Á
+œªÎ˚Ò«Û —ªÔ·
 #
 # date_fmt
-%A, %e %B %Y √© %X (%Z)
+%d %B, %Y√. %H:%M:%S, %Z
 #
 # Long month names (without case ending)
 —·ı›Ì≥Ò«
@@ -83,5 +83,5 @@
 dm
 #
 # ampm_fmt
-
+%I:%M:%S %p
 # EOF

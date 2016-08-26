@@ -53,17 +53,17 @@ sobota
 %H:%M:%S
 #
 # x_fmt
-%d.%m.%Y
+%e. %m. %y
 #
 # c_fmt
-%a %e %b %X %Y
+%d. %B %Y %H:%M:%S
 #
 # AM/PM
 dop.
 pop.
 #
 # date_fmt
-%a %e %b %Y %X %Z
+%d. %B %Y %H:%M:%S %Z
 #
 # Long month names (without case ending)
 januar

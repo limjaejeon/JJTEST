@@ -50,20 +50,20 @@
 土曜日
 #
 # X_fmt
-%H時%M分%S秒
+%H:%M:%S
 #
 # x_fmt
 %Y/%m/%d
 #
 # c_fmt
-%a %_m/%e %T %Y
+%Y年%m月%e日 %A %H:%M:%S
 #
 # AM/PM
 午前
 午後
 #
 # date_fmt
-%Y年 %B%e日 %A %X %Z
+%Y年%m月%e日 %A %H:%M:%S %Z
 #
 # Long month names (without case ending)
 1月
@@ -83,5 +83,5 @@
 md
 #
 # ampm_fmt
-%I:%M:%S %p
+%p%I:%M:%S
 # EOF

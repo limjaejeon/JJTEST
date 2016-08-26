@@ -5624,8 +5624,7 @@ bxe_tx_mq_start_locked(struct bxe_softc    *sc,
     if (!sc->link_vars.link_up ||
         (if_getdrvflags(ifp) &
         (IFF_DRV_RUNNING | IFF_DRV_OACTIVE)) != IFF_DRV_RUNNING) {
-        if (m != NULL)
-            rc = drbr_enqueue(ifp, tx_br, m);
+        rc = drbr_enqueue(ifp, tx_br, m);
         goto bxe_tx_mq_start_locked_exit;
     }
 

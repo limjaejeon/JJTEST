@@ -128,11 +128,9 @@ static devclass_t pcib_devclass;
 DEFINE_CLASS_0(pcib, pcib_driver, pcib_methods, sizeof(struct pcib_softc));
 DRIVER_MODULE(pcib, pci, pcib_driver, pcib_devclass, NULL, NULL);
 
-#if defined(NEW_PCIB) || defined(PCI_HP)
-SYSCTL_DECL(_hw_pci);
-#endif
-
 #ifdef NEW_PCIB
+SYSCTL_DECL(_hw_pci);
+
 static int pci_clear_pcib;
 SYSCTL_INT(_hw_pci, OID_AUTO, clear_pcib, CTLFLAG_RDTUN, &pci_clear_pcib, 0,
     "Clear firmware-assigned resources for PCI-PCI bridge I/O windows.");
@@ -909,19 +907,10 @@ pcib_set_mem_decode(struct pcib_softc *sc)
 /*
  * PCI-express HotPlug support.
  */
-static int pci_enable_pcie_hp = 1;
-SYSCTL_INT(_hw_pci, OID_AUTO, enable_pcie_hp, CTLFLAG_RDTUN,
-    &pci_enable_pcie_hp, 0,
-    "Enable support for native PCI-express HotPlug.");
-
 static void
 pcib_probe_hotplug(struct pcib_softc *sc)
 {
 	device_t dev;
-	uint16_t link_sta, slot_sta;
-
-	if (!pci_enable_pcie_hp)
-		return;
 
 	dev = sc->dev;
 	if (pci_find_cap(dev, PCIY_EXPRESS, NULL) != 0)
@@ -933,29 +922,8 @@ pcib_probe_hotplug(struct pcib_softc *sc)
 	sc->pcie_link_cap = pcie_read_config(dev, PCIER_LINK_CAP, 4);
 	sc->pcie_slot_cap = pcie_read_config(dev, PCIER_SLOT_CAP, 4);
 
-	if ((sc->pcie_slot_cap & PCIEM_SLOT_CAP_HPC) == 0)
-		return;
-
-	/*
-	 * Some devices report that they have an MRL when they actually
-	 * do not.  Since they always report that the MRL is open, child
-	 * devices would be ignored.  Try to detect these devices and
-	 * ignore their claim of HotPlug support.
-	 *
-	 * If there is an open MRL but the Data Link Layer is active,
-	 * the MRL is not real.
-	 */
-	if ((sc->pcie_slot_cap & PCIEM_SLOT_CAP_MRLSP) != 0 &&
-	    (sc->pcie_link_cap & PCIEM_LINK_CAP_DL_ACTIVE) != 0) {
-		link_sta = pcie_read_config(dev, PCIER_LINK_STA, 2);
-		slot_sta = pcie_read_config(dev, PCIER_SLOT_STA, 2);
-		if ((slot_sta & PCIEM_SLOT_STA_MRLSS) != 0 &&
-		    (link_sta & PCIEM_LINK_STA_DL_ACTIVE) != 0) {
-			return;
-		}
-	}
-
-	sc->flags |= PCIB_HOTPLUG;
+	if (sc->pcie_slot_cap & PCIEM_SLOT_CAP_HPC)
+		sc->flags |= PCIB_HOTPLUG;
 }
 
 /*
@@ -981,8 +949,6 @@ pcib_pcie_hotplug_command(struct pcib_softc *sc, uint16_t val, uint16_t mask)
 	new = (ctl & ~mask) | val;
 	if (new == ctl)
 		return;
-	if (bootverbose)
-		device_printf(dev, "HotPlug command: %04x -> %04x\n", ctl, new);
 	pcie_write_config(dev, PCIER_SLOT_CTL, new, 2);
 	if (!(sc->pcie_slot_cap & PCIEM_SLOT_CAP_NCCS) &&
 	    (ctl & new) & PCIEM_SLOT_CTL_CCIE) {
@@ -1045,6 +1011,9 @@ pcib_hotplug_inserted(struct pcib_softc *sc)
 static int
 pcib_hotplug_present(struct pcib_softc *sc)
 {
+	device_t dev;
+
+	dev = sc->dev;
 
 	/* Card must be inserted. */
 	if (!pcib_hotplug_inserted(sc))
@@ -1071,9 +1040,9 @@ static void
 pcib_pcie_hotplug_update(struct pcib_softc *sc, uint16_t val, uint16_t mask,
     bool schedule_task)
 {
-	bool card_inserted, ei_engaged;
+	bool card_inserted;
 
-	/* Clear DETACHING if Presence Detect has cleared. */
+	/* Clear DETACHING if Present Detect has cleared. */
 	if ((sc->pcie_slot_sta & (PCIEM_SLOT_STA_PDC | PCIEM_SLOT_STA_PDS)) ==
 	    PCIEM_SLOT_STA_PDC)
 		sc->flags &= ~PCIB_DETACHING;
@@ -1108,22 +1077,21 @@ pcib_pcie_hotplug_update(struct pcib_softc *sc, uint16_t val, uint16_t mask,
 	 */
 	if (sc->pcie_slot_cap & PCIEM_SLOT_CAP_EIP) {
 		mask |= PCIEM_SLOT_CTL_EIC;
-		ei_engaged = (sc->pcie_slot_sta & PCIEM_SLOT_STA_EIS) != 0;
-		if (card_inserted != ei_engaged)
+		if (card_inserted !=
+		    !(sc->pcie_slot_sta & PCIEM_SLOT_STA_EIS))
 			val |= PCIEM_SLOT_CTL_EIC;
 	}
 
 	/*
 	 * Start a timer to see if the Data Link Layer times out.
-	 * Note that we only start the timer if Presence Detect or MRL Sensor
+	 * Note that we only start the timer if Presence Detect
 	 * changed on this interrupt.  Stop any scheduled timer if
 	 * the Data Link Layer is active.
 	 */
 	if (sc->pcie_link_cap & PCIEM_LINK_CAP_DL_ACTIVE) {
 		if (card_inserted &&
 		    !(sc->pcie_link_sta & PCIEM_LINK_STA_DL_ACTIVE) &&
-		    sc->pcie_slot_sta &
-		    (PCIEM_SLOT_STA_MRLSC | PCIEM_SLOT_STA_PDC)) {
+		    sc->pcie_slot_sta & PCIEM_SLOT_STA_PDC) {
 			if (cold)
 				device_printf(sc->dev,
 				    "Data Link Layer inactive\n");
@@ -1137,7 +1105,7 @@ pcib_pcie_hotplug_update(struct pcib_softc *sc, uint16_t val, uint16_t mask,
 	pcib_pcie_hotplug_command(sc, val, mask);
 
 	/*
-	 * During attach the child "pci" device is added synchronously;
+	 * During attach the child "pci" device is added sychronously;
 	 * otherwise, the task is scheduled to manage the child
 	 * device.
 	 */
@@ -1158,10 +1126,6 @@ pcib_pcie_intr(void *arg)
 
 	/* Clear the events just reported. */
 	pcie_write_config(dev, PCIER_SLOT_STA, sc->pcie_slot_sta, 2);
-
-	if (bootverbose)
-		device_printf(dev, "HotPlug interrupt: %#x\n",
-		    sc->pcie_slot_sta);
 
 	if (sc->pcie_slot_sta & PCIEM_SLOT_STA_ABP) {
 		if (sc->flags & PCIB_DETACH_PENDING) {	
@@ -1184,7 +1148,7 @@ pcib_pcie_intr(void *arg)
 		    sc->pcie_slot_sta & PCIEM_SLOT_STA_MRLSS ? "open" :
 		    "closed");
 	if (bootverbose && sc->pcie_slot_sta & PCIEM_SLOT_STA_PDC)
-		device_printf(dev, "Presence Detect Changed to %s\n",
+		device_printf(dev, "Present Detect Changed to %s\n",
 		    sc->pcie_slot_sta & PCIEM_SLOT_STA_PDS ? "card present" :
 		    "empty");
 	if (sc->pcie_slot_sta & PCIEM_SLOT_STA_CC)
@@ -1253,7 +1217,7 @@ pcib_pcie_cc_timeout(void *arg)
 	sta = pcie_read_config(dev, PCIER_SLOT_STA, 2);
 	if (!(sta & PCIEM_SLOT_STA_CC)) {
 		device_printf(dev,
-		    "HotPlug Command Timed Out - forcing detach\n");
+		    "Hotplug Command Timed Out - forcing detach\n");
 		sc->flags &= ~(PCIB_HOTPLUG_CMD_PENDING | PCIB_DETACH_PENDING);
 		sc->flags |= PCIB_DETACHING;
 		pcib_pcie_hotplug_update(sc, 0, 0, true);

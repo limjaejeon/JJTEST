@@ -53,17 +53,17 @@ dissabte
 %H:%M:%S
 #
 # x_fmt
-%d/%m/%Y
+%d/%m/%y
 #
 # c_fmt
-%a %e %b %X %Y
+%A %e %B de %Y, %H:%M:%S
 #
 # AM/PM
 a. m.
 p. m.
 #
 # date_fmt
-%A, %e de %B de %Y, %X %Z
+%A %e %B de %Y, %H:%M:%S %Z
 #
 # Long month names (without case ending)
 de gener

@@ -313,9 +313,11 @@ recheck_socket:
 	cl->cl_netid = NULL;
 	return (cl);
 err2:
-	mem_free(cl, sizeof (CLIENT));
-	mem_free(cu, sizeof (*cu));
-
+	if (cl) {
+		mem_free(cl, sizeof (CLIENT));
+		if (cu)
+			mem_free(cu, sizeof (*cu));
+	}
 	return (NULL);
 }
 

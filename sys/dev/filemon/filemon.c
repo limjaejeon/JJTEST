@@ -137,8 +137,6 @@ filemon_proc_get(struct proc *p)
 {
 	struct filemon *filemon;
 
-	if (p->p_filemon == NULL)
-		return (NULL);
 	PROC_LOCK(p);
 	filemon = filemon_acquire(p->p_filemon);
 	PROC_UNLOCK(p);

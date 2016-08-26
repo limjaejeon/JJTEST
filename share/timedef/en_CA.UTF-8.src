@@ -50,20 +50,20 @@ Friday
 Saturday
 #
 # X_fmt
-%H:%M:%S
+%I:%M:%S %p
 #
 # x_fmt
-%d/%m/%Y
+%Y-%m-%d
 #
 # c_fmt
-%a %e %b %X %Y
+%A, %B %e, %Y at %I:%M:%S %p
 #
 # AM/PM
 AM
 PM
 #
 # date_fmt
-%a %e %b %Y %X %Z
+%A, %B %e, %Y at %I:%M:%S %p %Z
 #
 # Long month names (without case ending)
 January

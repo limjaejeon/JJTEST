@@ -50,20 +50,20 @@
 السبت
 #
 # X_fmt
-%H:%M:%S
+%I:%M:%S %p
 #
 # x_fmt
-%d/%m/%Y
+%e‏/%m‏/%Y
 #
 # c_fmt
-%a %b %e %X %Y
+%e %B، %Y %I:%M:%S %p
 #
 # AM/PM
 ص
 م
 #
 # date_fmt
-%a %b %e %X %Z %Y
+%e %B، %Y %I:%M:%S %p %Z
 #
 # Long month names (without case ending)
 يناير

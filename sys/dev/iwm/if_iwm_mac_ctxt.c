@@ -280,24 +280,12 @@ iwm_mvm_mac_ctxt_cmd_common(struct iwm_softc *sc, struct iwm_node *in,
 	/*
 	 * XXX should we error out if in_assoc is 1 and ni == NULL?
 	 */
-#if 0
 	if (in->in_assoc) {
 		IEEE80211_ADDR_COPY(cmd->bssid_addr, ni->ni_bssid);
 	} else {
 		/* eth broadcast address */
-		IEEE80211_ADDR_COPY(cmd->bssid_addr, ieee80211broadcastaddr);
+		memset(cmd->bssid_addr, 0xff, sizeof(cmd->bssid_addr));
 	}
-#else
-	/*
-	 * XXX This workaround makes the firmware behave more correctly once
-	 *     we are associated, regularly giving us statistics notifications,
-	 *     as well as signaling missed beacons to us.
-	 *     Since we only call iwm_mvm_mac_ctxt_add() and
-	 *     iwm_mvm_mac_ctxt_changed() when already authenticating or
-	 *     associating, ni->ni_bssid should always make sense here.
-	 */
-	IEEE80211_ADDR_COPY(cmd->bssid_addr, ni->ni_bssid);
-#endif
 
 	/*
 	 * Default to 2ghz if no node information is given.
@@ -469,7 +457,13 @@ static int
 iwm_mvm_mac_ctx_send(struct iwm_softc *sc, struct ieee80211vap *vap,
     uint32_t action)
 {
-	return iwm_mvm_mac_ctxt_cmd_station(sc, vap, action);
+	int ret;
+
+	ret = iwm_mvm_mac_ctxt_cmd_station(sc, vap, action);
+	if (ret)
+		return (ret);
+
+	return (0);
 }
 
 int
@@ -495,13 +489,17 @@ int
 iwm_mvm_mac_ctxt_changed(struct iwm_softc *sc, struct ieee80211vap *vap)
 {
 	struct iwm_vap *iv = IWM_VAP(vap);
+	int ret;
 
 	if (iv->is_uploaded == 0) {
 		device_printf(sc->sc_dev, "%s: called; uploaded = 0\n",
 		    __func__);
 		return (EIO);
 	}
-	return iwm_mvm_mac_ctx_send(sc, vap, IWM_FW_CTXT_ACTION_MODIFY);
+	ret = iwm_mvm_mac_ctx_send(sc, vap, IWM_FW_CTXT_ACTION_MODIFY);
+	if (ret)
+		return (ret);
+	return (0);
 }
 
 #if 0

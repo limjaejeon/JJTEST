@@ -576,6 +576,7 @@ def : Proc<"btver1", [
   FeaturePRFCHW,
   FeatureLZCNT,
   FeaturePOPCNT,
+  FeatureXSAVE,
   FeatureSlowSHLD,
   FeatureLAHFSAHF
 ]>;

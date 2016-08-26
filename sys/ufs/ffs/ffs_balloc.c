@@ -480,8 +480,8 @@ fail:
 		 */
 		bp = getblk(vp, *lbns_remfree, fs->fs_bsize, 0, 0, GB_NOCREAT);
 		if (bp != NULL) {
-			bp->b_flags |= B_INVAL | B_RELBUF | B_NOCACHE;
-			bp->b_flags &= ~(B_ASYNC | B_CACHE);
+			bp->b_flags |= (B_INVAL | B_RELBUF);
+			bp->b_flags &= ~B_ASYNC;
 			brelse(bp);
 		}
 		deallocated += fs->fs_bsize;
@@ -1051,8 +1051,8 @@ fail:
 		 */
 		bp = getblk(vp, *lbns_remfree, fs->fs_bsize, 0, 0, GB_NOCREAT);
 		if (bp != NULL) {
-			bp->b_flags |= B_INVAL | B_RELBUF | B_NOCACHE;
-			bp->b_flags &= ~(B_ASYNC | B_CACHE);
+			bp->b_flags |= (B_INVAL | B_RELBUF);
+			bp->b_flags &= ~B_ASYNC;
 			brelse(bp);
 		}
 		deallocated += fs->fs_bsize;

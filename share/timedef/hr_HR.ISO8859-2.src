@@ -53,17 +53,17 @@ subota
 %H:%M:%S
 #
 # x_fmt
-%d.%m.%Y
+%d.%m.%Y.
 #
 # c_fmt
-%a %e %b %X %Y
+%A %e %B %Y. u %H:%M:%S
 #
 # AM/PM
 AM
 PM
 #
 # date_fmt
-%a %e %b %Y %X %Z
+%A %e %B %Y. u %H:%M:%S %Z
 #
 # Long month names (without case ending)
 sijeènja

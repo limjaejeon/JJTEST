@@ -56,14 +56,14 @@ laavadahke
 %Y-%m-%d
 #
 # c_fmt
-%b %d %Y %X
+%Y %B %e %H:%M:%S
 #
 # AM/PM
 iđitbeaivet
 eahketbeaivet
 #
 # date_fmt
-%a, %b %d %Y %X %Z
+%Y %B %e %H:%M:%S %Z
 #
 # Long month names (without case ending)
 ođđajagemánnu

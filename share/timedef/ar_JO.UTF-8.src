@@ -50,20 +50,20 @@
 السبت
 #
 # X_fmt
-%H:%M:%S
+%OI:%OM:%OS %p
 #
 # x_fmt
-%d/%m/%Y
+%Oe‏/%Om‏/%Oy
 #
 # c_fmt
-%a %b %e %X %Y
+%Oe %B، %Oy %OI:%OM:%OS %p
 #
 # AM/PM
 ص
 م
 #
 # date_fmt
-%a %b %e %X %Z %Y
+%Oe %B، %Oy %OI:%OM:%OS %p %Z
 #
 # Long month names (without case ending)
 كانون الثاني
@@ -83,5 +83,5 @@
 dm
 #
 # ampm_fmt
-%I:%M:%S %p
-#mEOF
+%OI:%OM:%OS %p
+# EOF

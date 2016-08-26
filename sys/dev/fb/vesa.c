@@ -79,7 +79,6 @@ struct adp_state {
 typedef struct adp_state adp_state_t;
 
 static struct mtx vesa_lock;
-MTX_SYSINIT(vesa_lock, &vesa_lock, "VESA lock", MTX_DEF);
 
 static int vesa_state;
 static void *vesa_state_buf;
@@ -1915,6 +1914,8 @@ vesa_load(void)
 	if (vesa_init_done)
 		return (0);
 
+	mtx_init(&vesa_lock, "VESA lock", NULL, MTX_DEF);
+
 	/* locate a VGA adapter */
 	vesa_adp = NULL;
 	error = vesa_configure(0);
@@ -1953,6 +1954,7 @@ vesa_unload(void)
 	}
 
 	vesa_bios_uninit();
+	mtx_destroy(&vesa_lock);
 
 	return (error);
 }

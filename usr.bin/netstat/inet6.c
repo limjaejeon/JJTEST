@@ -207,11 +207,11 @@ static	const char *ip6nh[] = {
 	"#129",
 	"#130",
 	"#131",
-	"SCTP",
+	"#132",
 	"#133",
 	"#134",
 	"#135",
-	"UDPLite",
+	"#136",
 	"#137",
 	"#138",
 	"#139",
@@ -488,8 +488,8 @@ ip6_stats(u_long off, const char *name, int af1 __unused, int proto __unused)
 			  "{N:/global%s}\n");\
 			break;\
 		default:\
-			xo_emit("\t\t{qke:name/%#x}{:count/%ju} " \
-				"{N:/addresses scope=%#x}\n",\
+			xo_emit("\t\t{qke:name/%x}{:count/%ju} " \
+				"addresses scope=%x\n",\
 				i, (uintmax_t)ip6stat.s, i);	   \
 		}\
 	} while (0);

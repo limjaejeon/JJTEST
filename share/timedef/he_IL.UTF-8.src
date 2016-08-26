@@ -56,14 +56,14 @@
 %d.%m.%Y
 #
 # c_fmt
-%b %d %Y %X
+%e ב%B %Y בשעה %H:%M:%S
 #
 # AM/PM
 לפנה״צ
 אחה״צ
 #
 # date_fmt
-%a %b %d %Y %X %Z
+%e ב%B %Y בשעה %H:%M:%S %Z
 #
 # Long month names (without case ending)
 ינואר

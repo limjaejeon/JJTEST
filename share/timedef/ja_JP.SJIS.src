@@ -50,20 +50,20 @@
 “y—j“ú
 #
 # X_fmt
-%HŽž%M•ª%S•b
+%H:%M:%S
 #
 # x_fmt
 %Y/%m/%d
 #
 # c_fmt
-%a %_m/%e %T %Y
+%Y”N%mŒŽ%e“ú %H:%M:%S
 #
 # AM/PM
 Œß‘O
 ŒßŒã
 #
 # date_fmt
-%Y”N %B%e“ú %A %X %Z
+%Y”N%mŒŽ%e“ú %A %H:%M:%S %Z
 #
 # Long month names (without case ending)
 1ŒŽ
@@ -83,5 +83,5 @@
 md
 #
 # ampm_fmt
-%I:%M:%S %p
+%p%I:%M:%S
 # EOF

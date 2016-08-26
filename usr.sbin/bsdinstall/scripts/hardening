@@ -28,7 +28,7 @@
 
 : ${DIALOG_OK=0}
 
-echo -n > $BSDINSTALL_TMPETC/rc.conf.hardening
+echo -n > $BSDINSTALL_TMPETC/rc.conf.services
 
 exec 3>&1
 FEATURES=$( dialog --backtitle "FreeBSD Installer" \

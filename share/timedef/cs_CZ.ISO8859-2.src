@@ -53,17 +53,17 @@ sobota
 %H:%M:%S
 #
 # x_fmt
-%Y/%m/%d
+%d.%m.%y
 #
 # c_fmt
-%a %e %b %X %Y
+%A %e %B %Y %H:%M:%S
 #
 # AM/PM
 dopoledne
 odpoledne
 #
 # date_fmt
-%a %e. %B %Y %X %Z
+%A %e %B %Y %H:%M:%S %Z
 #
 # Long month names (without case ending)
 leden

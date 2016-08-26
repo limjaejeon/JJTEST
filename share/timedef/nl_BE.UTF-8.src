@@ -53,17 +53,17 @@ zaterdag
 %H:%M:%S
 #
 # x_fmt
-%d-%m-%Y
+%d/%m/%y
 #
 # c_fmt
-%a %e %b %X %Y
+%A %e %B %Y %H:%M:%S
 #
 # AM/PM
 a.m.
 p.m.
 #
 # date_fmt
-%a %e %b %Y %X %Z
+%A %e %B %Y %H:%M:%S %Z
 #
 # Long month names (without case ending)
 januari

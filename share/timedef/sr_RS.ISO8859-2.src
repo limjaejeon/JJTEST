@@ -53,17 +53,17 @@ subota
 %H.%M.%S
 #
 # x_fmt
-%d.%m.%Y
+%d.%m.%y.
 #
 # c_fmt
-%d %b %Y %X
+%d. %B %Y. %H.%M.%S
 #
 # AM/PM
 pre podne
 po podne
 #
 # date_fmt
-%a, %d %b %Y %X %Z
+%d. %B %Y. %H.%M.%S %Z
 #
 # Long month names (without case ending)
 januar

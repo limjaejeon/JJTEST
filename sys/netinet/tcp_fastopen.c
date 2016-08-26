@@ -108,7 +108,6 @@ __FBSDID("$FreeBSD$");
 #include <sys/limits.h>
 #include <sys/lock.h>
 #include <sys/rmlock.h>
-#include <sys/socket.h>
 #include <sys/socketvar.h>
 #include <sys/sysctl.h>
 #include <sys/systm.h>

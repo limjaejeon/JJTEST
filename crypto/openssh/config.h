@@ -1701,7 +1701,7 @@
 /* #undef WITH_SELINUX */
 
 /* include SSH protocol version 1 support */
-/* #undef WITH_SSH1 */
+#define WITH_SSH1 1
 
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
    significant byte first (like Motorola and SPARC, unlike Intel). */
