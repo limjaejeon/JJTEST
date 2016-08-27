@@ -1,7 +1,7 @@
 #ifndef DRM_OS_CONFIG_H_
 #define DRM_OS_CONFIG_H_ 
 
-#define CONFIG_DEBUG_FS
+//#define CONFIG_DEBUG_FS
 #ifdef notyet
 #define CONFIG_COMPAT COMPAT_FREEBSD32
 #endif

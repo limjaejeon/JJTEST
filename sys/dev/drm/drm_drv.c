@@ -916,12 +916,14 @@ static int __init drm_core_init(void)
 		goto err_p2;
 	}
 
+#ifdef CONFIG_DEBUG_FS
 	drm_debugfs_root = debugfs_create_dir("dri", NULL);
 	if (!drm_debugfs_root) {
 		DRM_ERROR("Cannot create /sys/kernel/debug/dri\n");
 		ret = -1;
 		goto err_p3;
 	}
+#endif
 
 	DRM_INFO("Initialized %s %d.%d.%d %s\n",
 		 CORE_NAME, CORE_MAJOR, CORE_MINOR, CORE_PATCHLEVEL, CORE_DATE);

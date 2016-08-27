@@ -298,4 +298,6 @@ MODULE_DEPEND(drmn, agp, 1, 1, 1);
 MODULE_DEPEND(drmn, pci, 1, 1, 1);
 MODULE_DEPEND(drmn, mem, 1, 1, 1);
 MODULE_DEPEND(drmn, linuxkpi, 1, 1, 1);
+#ifdef CONFIG_DEBUG_FS
 MODULE_DEPEND(drmn, debugfs, 1, 1, 1);
+#endif

@@ -14,7 +14,6 @@ SRCS	= \
 	drm_context.c \
 	drm_crtc.c \
 	drm_crtc_helper.c \
-	drm_debugfs.c \
 	drm_dma.c \
 	drm_dp_dual_mode_helper.c \
 	drm_dp_helper.c \
@@ -70,7 +69,7 @@ SRCS	= \
 	ttm_page_alloc.c \
 	ttm_page_alloc_dma.c \
 	ttm_bo_vm.c \
-
+	#drm_debugfs.c \
 
 
         # drm_of.c
@@ -110,7 +109,7 @@ CWARNFLAGS += -Wno-pointer-arith -Wno-pointer-sign -Wno-format
 CWARNFLAGS.drm_mipi_dsi.c+=	-Wno-incompatible-pointer-types-discards-qualifiers -Wno-int-conversion
 CWARNFLAGS.drm_cache.c+=	-Wno-int-conversion
 CWARNFLAGS.drm_info.c+=		-Wno-tautological-compare
-CWARNFLAGS.drm_debugfs.c+=	-Wno-format-security
+#CWARNFLAGS.drm_debugfs.c+=	-Wno-format-security
 CWARNFLAGS.drm_scatter.c+=	-Wno-int-conversion
 .include <bsd.kmod.mk>
 
