@@ -97,7 +97,6 @@ SUBDIR=	\
 	de \
 	${_dpms} \
 	${_dpt} \
-	${_drm_old} \
 	${_drm} \
 	dummynet \
 	${_ed} \
@@ -545,7 +544,6 @@ _cpuctl=	cpuctl
 _cpufreq=	cpufreq
 _cs=		cs
 _dpms=		dpms
-_drm_old=	drm_old
 _drm=		drm
 _ed=		ed
 _em=		em
