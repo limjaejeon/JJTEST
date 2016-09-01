@@ -1786,8 +1786,9 @@ linux_compat_init(void *arg)
 	INIT_LIST_HEAD(&pci_drivers);
 	INIT_LIST_HEAD(&pci_devices);
 	spin_lock_init(&pci_lock);
-
+#ifndef __LP64__
     kmap_init(); /*__TOS_BP_11*/
+#endif
 }
 
 SYSINIT(linux_compat, SI_SUB_VFS, SI_ORDER_ANY, linux_compat_init, NULL);
@@ -1802,12 +1803,14 @@ linux_compat_uninit(void *arg)
 	destroy_workqueue(system_long_wq);
 	destroy_workqueue(system_wq);
 	destroy_workqueue(system_unbound_wq);
-
+#ifndef __LP64__
     synchronize_rcu(); /*__TOS_BP_11*/
     sx_destroy(&linux_global_lock); /*__TOS_BP_11*/
+#endif
 	spin_lock_destroy(&pci_lock);
-
+#ifndef __LP64__
     kmap_cleanup(); /*__TOS_BP_11*/
+#endif
 }
 SYSUNINIT(linux_compat, SI_SUB_VFS, SI_ORDER_ANY, linux_compat_uninit, NULL);
 
