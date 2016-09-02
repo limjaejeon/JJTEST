@@ -6,6 +6,7 @@ SYSDIR?=${.CURDIR}/../..
 .if ${MACHINE_CPUARCH} == "amd64"
 _i915kms=	i915
 _radeonkms=	radeonkms
+_nouveaukms= nouveaukms
 . if ${MK_SOURCELESS_UCODE} != "no"
 _amdgpukmsfw=	amdgpukmsfw
 _radeonkmsfw=	radeonkmsfw
@@ -36,7 +37,8 @@ SUBDIR = \
 	${_i915kms} \
 	${_amdgpukmsfw} \
 	${_radeonkmsfw} \
-	${_radeonkms}
+	${_radeonkms}	\
+	${_nouveaukms}
 
 # Special target that causes drm2 code to printf error returns.  Useful for
 # determining the root cause of errors.  Depends on drmP.h macro DRM_ERR_RET.
