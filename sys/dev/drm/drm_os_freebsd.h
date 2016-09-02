@@ -112,6 +112,24 @@ do {								\
 /* Taken from linux/include/linux/unaligned/le_struct.h. */
 struct __una_u32 { u32 x; } __packed;
 
+#ifndef __TOS_ADD
+struct __una_u16 { u16 x; } __packed;
+
+static inline u16
+__get_unaligned_cpu16(const void *p)
+{
+	const struct __una_u16 *ptr = (const struct __una_u16 *)p;
+	return ptr->x;
+}
+
+static inline u16
+get_unaligned_le16(const void *p)
+{
+	return __get_unaligned_cpu16((const u8 *)p);
+}
+#endif
+
+
 static inline u32
 __get_unaligned_cpu32(const void *p)
 {
@@ -128,6 +146,20 @@ get_unaligned_le32(const void *p)
 }
 #else
 /* Taken from linux/include/linux/unaligned/le_byteshift.h. */
+#ifndef __TOS_ADD
+static inline u16
+__get_unaligned_le16(const u8 *p)
+{
+	return p[0] | p[1] << 8;
+}
+
+static inline u16
+get_unaligned_le16(const void *p)
+{
+	return __get_unaligned_le16((const u8 *)p);
+}
+#endif
+
 static inline u32
 __get_unaligned_le32(const u8 *p)
 {
@@ -260,14 +292,6 @@ static inline int vga_switcheroo_get_client_state(struct pci_dev *pdev) { return
 
 #define CONFIG_X86_PAT
 extern	u_int	cpu_clflush_line_size;
-
-
-#ifndef __LP64__
-static inline u64 readq(void __iomem *reg)
-{
-        return ((u64) readl(reg)) | (((u64) readl(reg + 4UL)) << 32);
-}
-#endif
 
 
 #endif /* _DRM_OS_FREEBSD_H_ */
