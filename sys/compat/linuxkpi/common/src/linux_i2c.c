@@ -259,15 +259,19 @@ i2c_txn_stop(struct i2c_algo_bit_data *adap)
 static int
 i2c_sendbyte(struct i2c_algo_bit_data *adap, unsigned char data)
 {
-	int i, ack;
+	int i, ack, b;
 
 	for (i=7; i>=0; i--) {
-		if (data&(1<<i)) {
-			i2c_one(adap);
-		} else {
-			i2c_zero(adap);
-		}
+		b = !!(data & (1<<i));
+		setsda(adap, b);
+		UDELAY((adap->udelay + 1) / 2);
+		if (sclhi(adap) < 0)
+			return -ETIMEDOUT;
+		scllo(adap);
 	}
+	sdahi(adap);
+	if (sclhi(adap) < 0)
+		return -ETIMEDOUT;
 
 	ack = (getsda(adap) == 0);
 	scllo(adap);
