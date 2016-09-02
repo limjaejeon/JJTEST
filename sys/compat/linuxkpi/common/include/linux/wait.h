@@ -176,8 +176,10 @@ __wake_up_locked(wait_queue_head_t *q, int mode, int nr, void *key)
 		/* note that we're ignoring exclusive wakeups here */
 		curr->func(curr, TASK_NORMAL, 0, key);
 		if ((t = curr->private) != NULL)
-			/* type of curr->private can be struct poll_wqueues */
-			if (t->state != 33333331) // FIXME
+			/* TOS: FIXME
+			 * type of curr->private can be struct poll_wqueues
+			 */
+			if (t->guard != 33333331)
 				t->state = TASK_WAKING;
 		nr--;
 		if (nr == 0)
