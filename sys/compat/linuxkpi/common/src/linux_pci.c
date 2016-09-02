@@ -132,11 +132,27 @@ linux_pci_find(device_t dev, const struct pci_device_id **idp)
 	spin_lock(&pci_lock);
 	list_for_each_entry(pdrv, &pci_drivers, links) {
 		for (id = pdrv->id_table; id->vendor != 0; id++) {
+			#ifndef __TOS_ADD
+			if (vendor == id->vendor){
+				if (id->device == PCI_ANY_ID){
+					*idp = id;
+					spin_unlock(&pci_lock);
+					return (pdrv);
+				}else{
+					if(device == id->device){
+						*idp = id;
+						spin_unlock(&pci_lock);
+						return (pdrv);			
+					}
+				}
+			}
+			#else
 			if (vendor == id->vendor && device == id->device) {
 				*idp = id;
 				spin_unlock(&pci_lock);
 				return (pdrv);
 			}
+			#endif
 		}
 	}
 	spin_unlock(&pci_lock);

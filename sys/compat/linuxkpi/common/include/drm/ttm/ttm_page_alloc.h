@@ -89,6 +89,17 @@ static inline int ttm_dma_page_alloc_init(struct ttm_mem_global *glob,
 	return -ENODEV;
 }
 
+#ifndef __TOS_ADD
+static inline int ttm_dma_populate(struct ttm_dma_tt *ttm_dma, struct device *dev)
+{
+	return -ENODEV;
+}
+static inline void ttm_dma_unpopulate(struct ttm_dma_tt *ttm_dma, struct device *dev)
+{
+
+}
+#endif
+
 static inline void ttm_dma_page_alloc_fini(void) { return; }
 
 

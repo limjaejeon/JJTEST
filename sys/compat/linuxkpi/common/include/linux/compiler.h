@@ -37,6 +37,13 @@
 #include <sys/systm.h>
 #include <sys/syslog.h>
 
+
+#ifndef __TOS_ADD
+#ifdef __GNUC__
+#include <linux/compiler-gcc.h>
+#endif
+#endif
+
 #define __user
 #define __kernel
 #define __safe

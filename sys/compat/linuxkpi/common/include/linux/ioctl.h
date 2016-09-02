@@ -35,4 +35,13 @@
 
 #define	_IOC_SIZE(cmd) IOCPARM_LEN(cmd)
 
+#ifndef __TOS_ADD
+#define _IOC_NRBITS 8
+#define _IOC_NRMASK ((1 << _IOC_NRBITS)-1)
+#define _IOC_NRSHIFT    0
+#define _IOC_NR(nr)     (((nr) >> _IOC_NRSHIFT) & _IOC_NRMASK)
+#endif
+
+
+
 #endif	/* _LINUX_IOCTL_H_ */

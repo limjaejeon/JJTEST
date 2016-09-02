@@ -142,6 +142,11 @@ struct i2c_board_info {
 	int		irq;
 };
 
+#ifndef __TOS_ADD
+#define I2C_BOARD_INFO(dev_type, dev_addr) \
+	.type = dev_type, .addr = (dev_addr)
+#endif
+
 struct i2c_client {
 	unsigned short flags;		/* div., see below		*/
 	unsigned short addr;		/* chip address - NOTE: 7bit	*/
