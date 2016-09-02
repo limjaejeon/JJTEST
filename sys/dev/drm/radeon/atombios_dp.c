@@ -243,6 +243,7 @@ void radeon_dp_aux_init(struct radeon_connector *radeon_connector)
 		radeon_connector->ddc_bus->aux.transfer = radeon_dp_aux_transfer_atom;
 	}
 
+	radeon_connector->ddc_bus->aux.ddc.dev.class = drm_class; // TOS
 	ret = drm_dp_aux_register(&radeon_connector->ddc_bus->aux);
 	if (!ret)
 		radeon_connector->ddc_bus->has_aux = true;

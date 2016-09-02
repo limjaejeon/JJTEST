@@ -936,6 +936,7 @@ struct radeon_i2c_chan *radeon_i2c_create(struct drm_device *dev,
 		/* set the radeon hw i2c adapter */
 		snprintf(i2c->adapter.name, sizeof(i2c->adapter.name),
 			 "Radeon i2c hw bus %s", name);
+		i2c->adapter.dev.class = drm_class; // TOS
 		i2c->adapter.algo = &radeon_i2c_algo;
 		ret = i2c_add_adapter(&i2c->adapter);
 		if (ret) {
@@ -948,6 +949,7 @@ struct radeon_i2c_chan *radeon_i2c_create(struct drm_device *dev,
 		/* hw i2c using atom */
 		snprintf(i2c->adapter.name, sizeof(i2c->adapter.name),
 			 "Radeon i2c hw bus %s", name);
+		i2c->adapter.dev.class = drm_class; // TOS
 		i2c->adapter.algo = &radeon_atom_i2c_algo;
 		ret = i2c_add_adapter(&i2c->adapter);
 		if (ret) {
@@ -958,6 +960,7 @@ struct radeon_i2c_chan *radeon_i2c_create(struct drm_device *dev,
 		/* set the radeon bit adapter */
 		snprintf(i2c->adapter.name, sizeof(i2c->adapter.name),
 			 "Radeon i2c bit bus %s", name);
+		i2c->adapter.dev.class = drm_class; // TOS
 		i2c->adapter.algo_data = &i2c->bit;
 		i2c->bit.pre_xfer = pre_xfer;
 		i2c->bit.post_xfer = post_xfer;
