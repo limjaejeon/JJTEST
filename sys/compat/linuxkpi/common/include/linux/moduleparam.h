@@ -125,6 +125,40 @@
 #define	MODULE_PARM_DESC(name, desc) \
 	const char LINUXKPI_PARAM_DESC(name)[] = { desc }
 
+#ifndef __TOS_ADD //this part is added just for charp
+struct kernel_param;
+
+typedef int (*param_set_fn)(const char *val, struct kernel_param *kp);
+typedef int (*param_get_fn)(char *buffer, struct kernel_param *kp);
+
+/* added by JJL */
+struct kernel_param {
+    const char  *name;
+    u16     perm;
+    u16     flags;
+    param_set_fn    set;
+    param_get_fn    get;
+    union {
+        void    *arg;
+        struct kparam_string    *str;
+        struct kparam_array *arr;
+    } un;
+};
+
+static inline void
+param_sysinit(struct kernel_param *param)
+{
+}
+
+#define module_param_call(name, set, get, arg, perm)            \
+    static struct kernel_param __param_##name =         \
+        { #name, perm, 0, set, get, { arg } };          \
+    SYSINIT(name##_param_sysinit, SI_SUB_DRIVERS, SI_ORDER_FIRST,   \
+        param_sysinit, &__param_##name);
+
+#define LINUXKPI_PARAM_charp(name, var, mode) module_param_call(name, 0, 0, &var, mode)
+#endif
+
 SYSCTL_DECL(_compat_linuxkpi);
 
 #endif					/* _LINUX_MODULEPARAM_H_ */

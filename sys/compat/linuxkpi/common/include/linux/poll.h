@@ -85,8 +85,8 @@ struct poll_wqueues {
 	int inline_index;
 	struct poll_table_entry inline_entries[N_INLINE_POLL_ENTRIES];
 };
-CTASSERT(offsetof(struct task_struct, state) == offsetof(struct poll_wqueues, guard));
-CTASSERT(sizeof(((struct task_struct *)0)->state) == sizeof(((struct poll_wqueues *)0)->guard));
+//CTASSERT(offsetof(struct task_struct, state) == offsetof(struct poll_wqueues, guard));
+//CTASSERT(sizeof(((struct task_struct *)0)->state) == sizeof(((struct poll_wqueues *)0)->guard));
 
 struct poll_table_page {
 	struct poll_table_page * next;

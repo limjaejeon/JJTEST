@@ -36,6 +36,11 @@
 #include <sys/errno.h>
 
 #define	BIT(nr)			(1UL << (nr))
+#ifndef __TOS_ADD
+#define BIT_ULL(nr)   (1ULL << (nr))
+#endif
+
+
 #ifdef __LP64__
 #define	BITS_PER_LONG		64
 #else
@@ -54,6 +59,23 @@ __ffs(int mask)
 {
 	return (ffs(mask) - 1);
 }
+
+#ifndef __TOS_ADD
+
+static inline unsigned long __ffs64(uint64_t word)
+{
+#if BITS_PER_LONG == 32
+if (((uint32_t)word) == 0UL)
+	return __ffs((uint32_t)(word >> 32)) + 32;
+#elif BITS_PER_LONG != 64
+#error BITS_PER_LONG not 32 or 64
+#endif
+	return (ffsll(word) - 1);
+}
+
+
+#endif
+
 
 static inline int
 __fls(int mask)

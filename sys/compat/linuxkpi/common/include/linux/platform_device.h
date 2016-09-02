@@ -91,4 +91,10 @@ platform_device_register_simple(const char *name, int id,
 	return (platform_device_register_full(&pdevinfo));
 }
 
+#ifndef __TOS_ADD
+static inline void platform_set_drvdata(struct platform_device *pdev, void *data){
+	dev_set_drvdata(&pdev->dev, data);
+}
+#endif
+
 #endif

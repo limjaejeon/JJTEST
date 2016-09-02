@@ -245,6 +245,16 @@ schedule(void)
 	schedule_timeout(MAX_SCHEDULE_TIMEOUT);
 }
 
+#ifndef __TOS_ADD
+static inline char *
+get_task_comm(char *buf, struct task_struct *tsk)
+{
+	PROC_LOCK(tsk->task_thread->td_proc);
+  strncpy(buf, tsk->comm, 32);
+  PROC_UNLOCK(tsk->task_thread->td_proc);
+  return buf;
+}
+#endif
 
 
 

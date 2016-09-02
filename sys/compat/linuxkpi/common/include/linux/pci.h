@@ -126,6 +126,8 @@ struct pci_device_id {
 
 #define	MODULE_DEVICE_TABLE(bus, table)
 #define	PCI_ANY_ID		(-1)
+#define PCI_VENDOR_ID_NVIDIA  0x10de //nvidia
+#define PCI_VENDOR_ID_NVIDIA_SGS    0x12d2 //nvidia
 #define	PCI_VENDOR_ID_APPLE		0x106b
 #define	PCI_VENDOR_ID_ASUSTEK		0x1043
 #define	PCI_VENDOR_ID_ATI		0x1002
@@ -1143,14 +1145,22 @@ void *pci_platform_rom(struct pci_dev *pdev, size_t *size);
 
 
 static inline void linux_pci_save_state(struct pci_dev *pdev){
-	panic("implment me!!");
-	UNIMPLEMENTED();
+//	panic("implment me!!");
+//	UNIMPLEMENTED();
+	#ifndef __TOS_ADD
+	pci_save_state(pdev->dev.bsddev);
+	#endif
 }
 
+
 static inline void linux_pci_restore_state(struct pci_dev *pdev){
-	panic("implment me!!");
-	UNIMPLEMENTED();
+//	panic("implment me!!");
+//	UNIMPLEMENTED();
+	#ifndef __TOS_ADD
+	pci_restore_state(pdev->dev.bsddev);
+	#endif
 }
+
 
 static inline void pci_ignore_hotplug(struct pci_dev *pdev){
 	UNIMPLEMENTED();
