@@ -41,6 +41,8 @@ SYSCTL_INT(_dev_drm, OID_AUTO, error_panic, CTLFLAG_RWTUN, &drm_panic_on_error, 
 int drm_skipwc;
 SYSCTL_INT(_dev_drm, OID_AUTO, skipwc, CTLFLAG_RWTUN, &drm_skipwc, 0, "disable WC on mmap");
 
+static atomic_t reset_debug_log_armed = ATOMIC_INIT(0);
+static struct callout_handle reset_debug_log_handle;
 
 static void
 clear_debug_func(void *arg __unused)
@@ -53,9 +55,18 @@ reset_debug_log(void)
 {
 	if (drm_debug_persist)
 		return;
-	timeout(clear_debug_func, NULL, 10*hz);
+	if (atomic_add_unless(&reset_debug_log_armed, 1, 1)) {
+		reset_debug_log_handle = timeout(clear_debug_func, NULL,
+		    10*hz);
+	}
 }
 
+static void
+cancel_reset_debug_log()
+{
+	if (atomic_read(&reset_debug_log_armed))
+		untimeout(clear_debug_func, NULL, reset_debug_log_handle);
+}
 
 #define to_drm_minor(d) dev_get_drvdata(d)
 #define to_drm_connector(d) dev_get_drvdata(d)
@@ -186,6 +197,7 @@ void drm_sysfs_destroy(void)
 {
 	if (IS_ERR_OR_NULL(drm_class))
 		return;
+	cancel_reset_debug_log();
 	class_remove_file(drm_class, &class_attr_version.attr);
 	class_destroy(drm_class);
 	drm_class = NULL;
@@ -615,7 +627,7 @@ drm_dev_alias(struct drm_minor *minor, const char *minor_str)
 	reset_debug_log();
 	return (0);
 }
-	
+
 
 /**
  * drm_sysfs_minor_alloc() - Allocate sysfs device for given minor
@@ -662,7 +674,7 @@ struct device *drm_sysfs_minor_alloc(struct drm_minor *minor)
 		goto err_free;
 	r = drm_dev_alias(minor, minor_str);
 	if (r < 0)
-		goto err_free;	
+		goto err_free;
 	return kdev;
 
 err_free:
