@@ -31,6 +31,7 @@ SRCS=	interval_tree.c \
 	linux_sysfs.c \
 	linux_usb.c \
 	linux_video.c \
+	linux_kmap.c \
 	linux_work.c \
 	lkpi_kern_malloc.c \
 	lkpi_kern_mutex.c \
@@ -54,9 +55,6 @@ SRCS+= 	linsysfs_init.c \
 	linsysfs_extern.c \
 	pci-sysfs.c
 
-.if ${MACHINE_CPUARCH} == "i386"
-SRCS	+= linux_kmap.c
-.endif
 
 CFLAGS+= -I${.CURDIR}/../../compat/linuxkpi/common/include
 CFLAGS+= -I${.CURDIR}/../../contrib/ck/include
