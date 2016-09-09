@@ -110,29 +110,30 @@
 } while (0)
 
 extern int linux_db_trace;
-/*
-#ifdef DDB
+#if 0 /* #ifdef DDB */
 extern void db_trace_self_depth(int);
 #define BACKTRACE()				\
 	do {					\
 		if (linux_db_trace)		\
 			db_trace_self_depth(6); \
-	} while (0);
+	} while (0)
 
+#define COND_BACKTRACE(cond)			\
+	do {					\
+		if ((cond))			\
+			BACKTRACE();		\
+	} while (0)
 #else
-#define BACKTRACE() do {} while (0);
+#define BACKTRACE()
+#define COND_BACKTRACE(cord)
 #endif
-*/
-
-#define BACKTRACE() do {} while (0);
 
 #define	WARN_ON(cond) ({					\
       static bool __bt_on_once;				        \
       bool __ret = (cond);					\
       struct thread *td = curthread;				\
       if (__ret) {						\
-	      if (!__bt_on_once)				\
-		      BACKTRACE();				\
+	      COND_BACKTRACE(!__bt_on_once);			\
 	      __bt_on_once = 1;					\
 	      printf("%s:%d WARNING %s failed at %s:%d\n",	\
 		     td->td_name, td->td_tid, __stringify(cond), __FILE__, __LINE__); \
@@ -298,6 +299,11 @@ scnprintf(char *buf, size_t size, const char *fmt, ...)
 #define	kstrtoint(a,b,c) ({*(c) = strtol(a,0,b); 0;})
 #define	kstrtouint(a,b,c) ({*(c) = strtol(a,0,b); 0;})
 #define	kstrtou32(a,b,c) ({*(c) = strtol(a,0,b); 0;})
+#define	kstrtoul(a,b,c) ({*(c) = strtoul(a,0,b); 0;})
+
+long long simple_strtoll(const char *cp, char **endp, unsigned int base);
+
+
 
 #define min(x, y)	((x) < (y) ? (x) : (y))
 #define max(x, y)	((x) > (y) ? (x) : (y))

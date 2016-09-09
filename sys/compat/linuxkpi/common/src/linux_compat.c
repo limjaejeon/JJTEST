@@ -193,48 +193,6 @@ on_each_cpu(void callback(void *data), void *data, int wait)
 	return (0);
 }
 
-long
-schedule_timeout(signed long timeout)
-{
-	int ret, flags, sleepable;
-	struct mtx *m;
-	struct mtx stackm;
-
-	if (timeout < 0)
-		return 0;
-	if (SKIP_SLEEP())
-		return (0);
-	MPASS(current);
-	sleepable = 0;
-	if (current->sleep_wq == NULL) {
-		m = &stackm;
-		bzero(m, sizeof(*m));
-		mtx_init(m, "stack", NULL, MTX_DEF|MTX_NOWITNESS);
-		mtx_lock(m);
-		sleepable = 1;
-	} else {
-		m = &current->sleep_wq->lock.m;
-		mtx_lock_spin(m);
-		if (current->state == TASK_WAKING) {
-			mtx_unlock_spin(m);
-			set_current_state(TASK_RUNNING);
-			return (0);
-		}
-	}
-
-	flags = (current->state == TASK_INTERRUPTIBLE) ? PCATCH : 0;
-	if (sleepable)
-		ret = _sleep(current, &(m->lock_object), flags | PDROP ,
-			     "lsti", tick_sbt * timeout, 0 , C_HARDCLOCK);
-	else 
-		ret = _msleep_spin_sbt(current, m, flags | PDROP, "lstisp",
-				      tick_sbt * timeout, 0, C_HARDCLOCK);
-
-	set_current_state(TASK_RUNNING);
-
-	return (-ret);
-}
-
 /*
  * XXX this leaks right now, we need to track
  * this memory so that it's freed on return from
@@ -246,6 +204,48 @@ compat_alloc_user_space(unsigned long len)
 
 	return (malloc(len, M_LCINT, M_NOWAIT));
 }
+
+void *
+memdup_user(const void *ubuf, size_t len)
+{
+	void *kbuf;
+	int rc;
+
+	kbuf = lkpi_malloc(len, M_KMALLOC, M_WAITOK);
+	rc = copyin(ubuf, kbuf, len);
+	if (rc) {
+		lkpi_free(kbuf, M_KMALLOC);
+		return ERR_PTR(-EFAULT);
+	}
+	return (kbuf);
+}
+
+unsigned long
+clear_user(void *uptr, unsigned long len)
+{
+	int i, iter, rem;
+
+	rem = len % 8;
+	iter = len / 8;
+
+	for (i = 0; i < iter; i++) {
+#ifdef __LP64__
+		if (suword64(((uint64_t *)uptr) + i, 0))
+			return (len);
+#else
+		if (suword32(((uint32_t *)uptr) + 2*i, 0))
+			return (len);
+		if (suword32(((uint32_t *)uptr) + 2*i + 1, 0))
+			return (len);
+#endif
+	}
+	for (i = 0; i < rem; i++) {
+		if (subyte(((uint8_t *)uptr) + iter*8 + i , 0))
+			return (len);
+	}
+	return (0);
+}
+
 
 int
 panic_cmp(struct rb_node *one, struct rb_node *two)
@@ -318,7 +318,7 @@ kobject_add_complete(struct kobject *kobj, struct kobject *parent)
 	int error;
 
 	kobj->parent = kobject_get(parent);
-	error = sysfs_create_dir(kobj);
+	error = sysfs_create_dir_ns(kobj, NULL);
 	if (error == 0 && kobj->ktype && kobj->ktype->default_attrs) {
 		struct attribute **attr;
 		t = kobj->ktype;
@@ -536,8 +536,8 @@ kobject_init_and_add(struct kobject *kobj, const struct kobj_type *ktype,
 	return kobject_add_complete(kobj, parent);
 }
 
-void
-linux_alloc_current(void)
+int
+linux_alloc_current(int flags)
 {
 	struct mm_struct *mm;
 	struct task_struct *t;
@@ -546,13 +546,15 @@ linux_alloc_current(void)
 	td = curthread;
 	MPASS(__predict_true(td->td_lkpi_task == NULL));
 
-	t = malloc(sizeof(*t), M_LCINT, M_WAITOK|M_ZERO);
+	if ((t = malloc(sizeof(*t), M_LCINT, flags|M_ZERO)) == NULL)
+		return (ENOMEM);
 	task_struct_fill(td, t);
 	mm = t->mm;
 	init_rwsem(&mm->mmap_sem);
 	mm->mm_count.counter = 1;
 	mm->mm_users.counter = 1;
 	curthread->td_lkpi_task = t;
+	return (0);
 }
 
 static void
@@ -1569,7 +1571,7 @@ list_sort(void *priv, struct list_head *head, int (*cmp)(void *priv,
 	count = 0;
 	list_for_each(le, head)
 		count++;
-	ar = malloc(sizeof(struct list_head *) * count, M_KMALLOC, M_WAITOK);
+	ar = lkpi_malloc(sizeof(struct list_head *) * count, M_KMALLOC, M_WAITOK);
 	i = 0;
 	list_for_each(le, head)
 		ar[i++] = le;
@@ -1579,7 +1581,7 @@ list_sort(void *priv, struct list_head *head, int (*cmp)(void *priv,
 	INIT_LIST_HEAD(head);
 	for (i = 0; i < count; i++)
 		list_add_tail(ar[i], head);
-	free(ar, M_KMALLOC);
+	lkpi_free(ar, M_KMALLOC);
 }
 
 int
@@ -1738,6 +1740,17 @@ async_schedule(async_func_t func, void *data)
 	return (newcookie);
 }
 
+#ifdef __notyet__
+/*
+ * XXX
+ * The rather broken taskqueue API doesn't allow us to serialize 
+ * on a particular thread's queue if we use more than 1 thread
+ */
+#define MAX_WQ_CPUS mp_ncpus
+#else
+#define MAX_WQ_CPUS 1
+#endif
+
 static void
 linux_compat_init(void *arg)
 {
@@ -1751,10 +1764,10 @@ linux_compat_init(void *arg)
 	boot_cpu_data.x86_clflush_size = cpu_clflush_line_size;
 	boot_cpu_data.x86 = ((cpu_id & 0xF0000) >> 12) | ((cpu_id & 0xF0) >> 4);
 
-	system_long_wq = alloc_workqueue("events_long", 0, mp_ncpus);
-	system_wq = alloc_workqueue("events", 0, mp_ncpus);
-	system_power_efficient_wq = alloc_workqueue("power efficient", 0, mp_ncpus);
-	system_unbound_wq = alloc_workqueue("events_unbound", WQ_UNBOUND, WQ_UNBOUND_MAX_ACTIVE);
+	system_long_wq = alloc_workqueue("events_long", 0, MAX_WQ_CPUS);
+	system_wq = alloc_workqueue("events", 0, MAX_WQ_CPUS);
+	system_power_efficient_wq = alloc_workqueue("power efficient", 0, MAX_WQ_CPUS);
+	system_unbound_wq = alloc_workqueue("events_unbound", WQ_UNBOUND, MAX_WQ_CPUS);
 	INIT_LIST_HEAD(&cdev_list);
 	rootoid = SYSCTL_ADD_ROOT_NODE(NULL,
 	    OID_AUTO, "sys", CTLFLAG_RD|CTLFLAG_MPSAFE, NULL, "sys");
@@ -1773,11 +1786,12 @@ linux_compat_init(void *arg)
 	INIT_LIST_HEAD(&pci_drivers);
 	INIT_LIST_HEAD(&pci_devices);
 	spin_lock_init(&pci_lock);
-
+#ifndef __LP64__
     kmap_init(); /*__TOS_BP_11*/
+#endif
 }
 
-SYSINIT(linux_compat, SI_SUB_DRIVERS, SI_ORDER_SECOND, linux_compat_init, NULL);
+SYSINIT(linux_compat, SI_SUB_VFS, SI_ORDER_ANY, linux_compat_init, NULL);
 
 static void
 linux_compat_uninit(void *arg)
@@ -1789,14 +1803,16 @@ linux_compat_uninit(void *arg)
 	destroy_workqueue(system_long_wq);
 	destroy_workqueue(system_wq);
 	destroy_workqueue(system_unbound_wq);
-
+#ifndef __LP64__
     synchronize_rcu(); /*__TOS_BP_11*/
     sx_destroy(&linux_global_lock); /*__TOS_BP_11*/
+#endif
 	spin_lock_destroy(&pci_lock);
-
+#ifndef __LP64__
     kmap_cleanup(); /*__TOS_BP_11*/
+#endif
 }
-SYSUNINIT(linux_compat, SI_SUB_DRIVERS, SI_ORDER_SECOND, linux_compat_uninit, NULL);
+SYSUNINIT(linux_compat, SI_SUB_VFS, SI_ORDER_ANY, linux_compat_uninit, NULL);
 
 /*
  * NOTE: Linux frequently uses "unsigned long" for pointer to integer

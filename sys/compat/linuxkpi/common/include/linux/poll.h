@@ -76,17 +76,17 @@ struct poll_table_entry {
 };
 
 struct poll_wqueues {
+	int guard; /* TOS: FIXME: see __wake_up_locked (wait.h) */
 	poll_table pt;
 	struct poll_table_page *table;
 	struct task_struct *polling_task;
 	int triggered;
 	int error;
-	int guard; // FIXME: see __wake_up_locked (wait.h)
 	int inline_index;
 	struct poll_table_entry inline_entries[N_INLINE_POLL_ENTRIES];
 };
-CTASSERT(offsetof(struct task_struct, state) == offsetof(struct poll_wqueues, guard));
-CTASSERT(sizeof(((struct task_struct *)0)->state) == sizeof(((struct poll_wqueues *)0)->guard));
+CTASSERT(offsetof(struct task_struct, guard) == offsetof(struct poll_wqueues, guard));
+CTASSERT(sizeof(((struct task_struct *)0)->guard) == sizeof(((struct poll_wqueues *)0)->guard));
 
 struct poll_table_page {
 	struct poll_table_page * next;

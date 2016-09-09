@@ -473,6 +473,7 @@ retry:
 	}
 }
 
+#if __TOS_BP_11
 #if defined(__i386__) || defined(__amd64__)
 
 int
@@ -505,5 +506,32 @@ set_pages_array_uc(struct page **pages, int addrinarray)
 	return (0);
 }
 #endif
+#else
+int set_pages_array_wb(vm_page_t *pages, int addrinarray)
+{
+	int i;
 
+	for (i = 0; i < addrinarray; i++)
+		pmap_page_set_memattr(pages[i], VM_MEMATTR_WRITE_BACK);
+	return 0;
+}
+
+int set_pages_array_wc(vm_page_t *pages, int addrinarray)
+{
+	int i;
+
+	for (i = 0; i < addrinarray; i++)
+		pmap_page_set_memattr(pages[i], VM_MEMATTR_WRITE_COMBINING);
+	return 0;
+}
+
+int set_pages_array_uc(vm_page_t *pages, int addrinarray)
+{
+	int i;
+
+	for (i = 0; i < addrinarray; i++)
+		pmap_page_set_memattr(pages[i], VM_MEMATTR_UNCACHEABLE);
+	return 0;
+}
+#endif
 

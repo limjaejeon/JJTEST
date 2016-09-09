@@ -83,6 +83,7 @@
 struct wait_queue_head;
 
 struct task_struct {
+	int	guard; /* TOS: FIXME: see __wake_up_locked (wait.h) */
 	struct	thread *task_thread;
 	struct mm_struct *mm;
 	int	(*task_fn)(void *data);
