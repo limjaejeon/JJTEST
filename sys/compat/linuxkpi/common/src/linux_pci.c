@@ -61,6 +61,7 @@ __FBSDID("$FreeBSD$");
 #include <linux/ioport.h>
 #include <linux/compat.h>
 
+#undef resource
 #define IO_SPACE_LIMIT 0xffff
 
 /* XXX asumes x86 */
@@ -205,6 +206,8 @@ linux_pci_attach(device_t dev)
 	pdev->devfn = PCI_DEVFN(pci_get_slot(dev), pci_get_function(dev));
 	pdev->device = id->device;
 	pdev->vendor = id->vendor;
+	pdev->revision = pci_get_revid(dev);
+	pdev->class = pci_get_class(dev);
 	pdev->dev.dma_mask = &pdev->dma_mask;
 	/* XXX how do we check this ? assume true */
 	pdev->msix_enabled = 1;
@@ -631,7 +634,11 @@ pci_map_rom(struct pci_dev *pdev, size_t *size)
 	pdev->pcir.rid[LINUXKPI_BIOS] = rid;
 	pdev->pcir.type[LINUXKPI_BIOS] = SYS_RES_MEMORY;
 	pdev->pcir.map[LINUXKPI_BIOS] = rman_get_virtual(res);
+#ifdef __LP64__
+	device_printf(dev, "bios size %lx bios addr %p\n", rman_get_size(res), rman_get_virtual(res));
+#else
 	device_printf(dev, "bios size %llx bios addr %p\n", rman_get_size(res), rman_get_virtual(res));
+#endif
 	*size = rman_get_size(res);
 	return (rman_get_virtual(res));
 }

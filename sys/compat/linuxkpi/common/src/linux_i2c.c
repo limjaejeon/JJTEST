@@ -112,7 +112,7 @@ linux_i2c_init(void *arg __unused)
 
 	return (i2c_class == NULL ? ENOMEM : 0);
 }
-SYSINIT(linux_i2c, SI_SUB_DRIVERS, SI_ORDER_FIRST, linux_i2c_init, NULL);
+SYSINIT(linux_i2c, SI_SUB_VFS, SI_ORDER_ANY, linux_i2c_init, NULL);
 
 
 #define UDELAY(x) DELAY((x) + 2)
@@ -259,15 +259,19 @@ i2c_txn_stop(struct i2c_algo_bit_data *adap)
 static int
 i2c_sendbyte(struct i2c_algo_bit_data *adap, unsigned char data)
 {
-	int i, ack;
+	int i, ack, b;
 
 	for (i=7; i>=0; i--) {
-		if (data&(1<<i)) {
-			i2c_one(adap);
-		} else {
-			i2c_zero(adap);
-		}
+		b = !!(data & (1<<i));
+		setsda(adap, b);
+		UDELAY((adap->udelay + 1) / 2);
+		if (sclhi(adap) < 0)
+			return -ETIMEDOUT;
+		scllo(adap);
 	}
+	sdahi(adap);
+	if (sclhi(adap) < 0)
+		return -ETIMEDOUT;
 
 	ack = (getsda(adap) == 0);
 	scllo(adap);

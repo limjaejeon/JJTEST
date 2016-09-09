@@ -14,7 +14,7 @@
 
 #include <linux/page.h>
 
-#if defined(__LP64__)
+#ifdef __LP64__
 
 void *
 kmap(vm_page_t page)

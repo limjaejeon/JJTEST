@@ -34,6 +34,12 @@
 #include <sys/types.h>
 #include <sys/eventhandler.h>
 
+#include <linux/errno.h>
+#include <linux/mutex.h>
+#include <linux/rwsem.h>
+#include <linux/srcu.h>
+
+
 #define	NOTIFY_DONE	0
 #define NOTIFY_OK	0x0001
 #define NOTIFY_STOP_MASK	0x8000
@@ -56,5 +62,22 @@ struct notifier_block {
 	int	priority;
 	eventhandler_tag tags[LINUX_NOTIFY_TAGS];
 };
+
+struct blocking_notifier_head {
+	struct rw_semaphore rwsem;
+	struct notifier_block __rcu *head;
+};
+
+#define BLOCKING_INIT_NOTIFIER_HEAD(name) do {	\
+		init_rwsem(&(name)->rwsem);	\
+		(name)->head = NULL;		\
+	} while (0)
+
+extern int blocking_notifier_chain_register(struct blocking_notifier_head *nh,
+		struct notifier_block *nb);
+extern int blocking_notifier_call_chain(struct blocking_notifier_head *nh,
+		unsigned long val, void *v);
+extern int blocking_notifier_chain_unregister(struct blocking_notifier_head *nh,
+		struct notifier_block *nb);
 
 #endif					/* _LINUX_NOTIFIER_H_ */
