@@ -1,6 +1,6 @@
 # $FreeBSD$
 
-KMOD=	radeonkmsfw_HAINAN_pfp
+KMOD=	radeonkmsfw_old_HAINAN_pfp
 IMG=	HAINAN_pfp
 
 .include <bsd.kmod.mk>

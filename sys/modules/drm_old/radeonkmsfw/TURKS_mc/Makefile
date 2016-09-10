@@ -1,6 +1,6 @@
 # $FreeBSD$
 
-KMOD=	radeonkmsfw_TURKS_mc
+KMOD=	radeonkmsfw_old_TURKS_mc
 IMG=	TURKS_mc
 
 .include <bsd.kmod.mk>
