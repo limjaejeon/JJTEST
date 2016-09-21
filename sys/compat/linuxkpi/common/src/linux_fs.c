@@ -64,7 +64,9 @@ __FBSDID("$FreeBSD$");
 
 
 
+#if 0 /* TOS */
 static MALLOC_DEFINE(M_LKFS, "lkfs", "lkpi fs");
+#endif
 uma_zone_t vnode_zone;
 
 struct dentry *
@@ -96,7 +98,7 @@ simple_pin_fs(struct file_system_type *type, struct vfsmount **mount, int *count
 	struct vfsmount *mp;
 
 	DODGY();
-	if ((mp = malloc(sizeof(*mp), M_LKFS, M_WAITOK|M_ZERO)) == NULL)
+	if ((mp = lkpi_malloc(sizeof(*mp), M_KMALLOC, M_WAITOK|M_ZERO)) == NULL)
 		return (-ENOMEM);
 	*mount = mp;
 	return (0);
@@ -105,7 +107,7 @@ simple_pin_fs(struct file_system_type *type, struct vfsmount **mount, int *count
 void
 simple_release_fs(struct vfsmount **mount, int *count)
 {
-	free(*mount, M_LKFS);
+	lkpi_free(*mount, M_KMALLOC);
 }
 
 int
@@ -321,7 +323,7 @@ shmem_file_setup(char *name, int size, int flags)
 	struct linux_file *filp;
 	struct vnode *vp;
 
-	if ((filp = malloc(sizeof(*filp), M_LKFS, M_NOWAIT|M_ZERO)) == NULL)
+	if ((filp = lkpi_malloc(sizeof(*filp), M_KMALLOC, M_NOWAIT|M_ZERO)) == NULL)
 		return (NULL);
 
 	if (getnewvnode("LINUX", NULL, &dead_vnodeops, &vp))
@@ -339,7 +341,7 @@ shmem_file_setup(char *name, int size, int flags)
 err_2:
 	_vdrop(vp, 0);
 err_1:
-	free(filp, M_LKFS);
+	lkpi_free(filp, M_KMALLOC);
 	return (NULL);
 }
 

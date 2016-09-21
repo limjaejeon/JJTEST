@@ -74,7 +74,7 @@ kstrdup(const char *string, gfp_t gfp)
 	char *copy;
 
 	len = strlen(string) + 1;
-	copy = malloc(len, M_KMALLOC, gfp);
+	copy = lkpi_malloc(len, M_KMALLOC, gfp);
 	bcopy(string, copy, len);
 	return (copy);
 }
@@ -84,7 +84,7 @@ kstrndup(const char *string, size_t len, gfp_t gfp)
 {
 	char *copy;
 
-	copy = malloc(len + 1, M_KMALLOC, gfp);
+	copy = lkpi_malloc(len + 1, M_KMALLOC, gfp);
 	strncpy(copy, string, len);
 	return (copy);
 }
