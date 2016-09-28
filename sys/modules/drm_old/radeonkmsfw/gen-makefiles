@@ -4,7 +4,7 @@
 set -e
 
 scriptdir=$(cd $(dirname $0) && pwd)
-fwdir=$scriptdir/../../../contrib/dev/drm2/radeonkmsfw
+fwdir=$scriptdir/../../../contrib/dev/drm/radeonkmsfw
 
 for dir in $scriptdir/*; do
 	if [ ! -d $dir ]; then
@@ -22,7 +22,7 @@ for file in $fwdir/*.uu; do
 	cat > $scriptdir/$img/Makefile <<EOF
 # \$FreeBSD$
 
-KMOD=	radeonkmsfw_$img
+KMOD=	radeonkmsfw_old_$img
 IMG=	$img
 
 .include <bsd.kmod.mk>

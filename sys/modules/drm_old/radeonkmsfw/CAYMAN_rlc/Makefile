@@ -1,6 +1,6 @@
 # $FreeBSD$
 
-KMOD=	radeonkmsfw_CAYMAN_rlc
+KMOD=	radeonkmsfw_old_CAYMAN_rlc
 IMG=	CAYMAN_rlc
 
 .include <bsd.kmod.mk>

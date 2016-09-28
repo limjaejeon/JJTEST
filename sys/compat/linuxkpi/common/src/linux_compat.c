@@ -252,9 +252,9 @@ panic_cmp(struct rb_node *one, struct rb_node *two)
 {
 	panic("no cmp");
 }
-
+#ifdef __TOS_WIP
 RB_GENERATE(linux_root, rb_node, __entry, panic_cmp);
-
+#endif
 int
 kobject_set_name_vargs(struct kobject *kobj, const char *fmt, va_list args)
 {

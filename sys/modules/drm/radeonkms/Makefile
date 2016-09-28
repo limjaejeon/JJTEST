@@ -69,7 +69,7 @@ SRCS	= \
 	radeon_gem.c \
 	radeon_i2c.c \
 	radeon_ib.c \
-	radeon_ioc32.c \
+	${radeon_ioc32} \
 	radeon_irq_kms.c \
 	radeon_kfd.c \
 	radeon_kms.c \
@@ -118,6 +118,11 @@ SRCS	= \
 	vce_v1_0.c \
 	vce_v2_0.c
 
+.if ${MACHINE_CPUARCH} == "amd64" || ${MACHINE_ARCH} == "powerpc64"
+radeon_ioc32=		radeon_ioc32.c
+CWARNFLAGS.radeon_ioc32.c=	-Wno-missing-prototypes -Wno-int-conversion
+.endif
+
 CFLAGS+= -I${.CURDIR}/../../../compat/linuxkpi/common/include
 CFLAGS+= -I${.CURDIR}/../../../compat/linuxkpi/common/include/drm
 CFLAGS+= -I${.CURDIR}/../../../compat/linuxkpi/common/include/uapi
@@ -158,7 +163,6 @@ CWARNFLAGS.radeon_clocks.c=	-Wno-missing-prototypes
 CWARNFLAGS.radeon_device.c=	-Wno-cast-qual -Wno-missing-prototypes
 CWARNFLAGS.radeon_dp_mst.c=	-Wno-missing-prototypes
 CWARNFLAGS.radeon_gem.c=	-Wno-missing-prototypes
-CWARNFLAGS.radeon_ioc32.c=	-Wno-missing-prototypes -Wno-int-conversion
 CWARNFLAGS.radeon_irq_kms.c=	-Wno-missing-prototypes
 CWARNFLAGS.radeon_kms.c=	-Wno-missing-prototypes
 CWARNFLAGS.radeon_legacy_encoders.c=	-Wno-missing-prototypes
@@ -177,3 +181,4 @@ CWARNFLAGS.trinity_dpm.c=	-Wno-unused-const-variable
 CWARNFLAGS.vce_v1_0.c=		-Wno-missing-prototypes -Wno-cast-qual
 CWARNFLAGS.vce_v2_0.c=		-Wno-missing-prototypes
 CWARNFLAGS+=			-Wno-pointer-arith ${CWARNFLAGS.${.IMPSRC:T}}
+CWARNFLAGS+=			-Wno-cast-qual

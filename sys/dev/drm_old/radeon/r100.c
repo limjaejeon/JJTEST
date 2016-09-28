@@ -44,13 +44,13 @@ __FBSDID("$FreeBSD$");
 #include "rn50_reg_safe.h"
 
 /* Firmware Names */
-#define FIRMWARE_R100		"radeonkmsfw_R100_cp"
-#define FIRMWARE_R200		"radeonkmsfw_R200_cp"
-#define FIRMWARE_R300		"radeonkmsfw_R300_cp"
-#define FIRMWARE_R420		"radeonkmsfw_R420_cp"
-#define FIRMWARE_RS690		"radeonkmsfw_RS690_cp"
-#define FIRMWARE_RS600		"radeonkmsfw_RS600_cp"
-#define FIRMWARE_R520		"radeonkmsfw_R520_cp"
+#define FIRMWARE_R100		"radeonkmsfw_old_R100_cp"
+#define FIRMWARE_R200		"radeonkmsfw_old_R200_cp"
+#define FIRMWARE_R300		"radeonkmsfw_old_R300_cp"
+#define FIRMWARE_R420		"radeonkmsfw_old_R420_cp"
+#define FIRMWARE_RS690		"radeonkmsfw_old_RS690_cp"
+#define FIRMWARE_RS600		"radeonkmsfw_old_RS600_cp"
+#define FIRMWARE_R520		"radeonkmsfw_old_R520_cp"
 
 #ifdef __linux__
 MODULE_FIRMWARE(FIRMWARE_R100);
