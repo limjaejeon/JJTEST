@@ -118,6 +118,10 @@ struct linux_file {
 	struct vnode	*f_vnode;
 	atomic_long_t		f_count;
 	vm_object_t	f_mapping;
+#if 1 // TOS
+	int		sh; // jkwak
+	struct vm_object	*orig_bo_object;
+#endif
 };
 #define f_inode		f_vnode
 #define	file		linux_file

@@ -331,11 +331,17 @@ shmem_file_setup(char *name, int size, int flags)
 
 	filp->f_dentry = &filp->f_dentry_store;
 	filp->f_vnode = vp;
+#if 1 // TOS
+	filp->orig_bo_object = file_inode(filp)->i_mapping; // NULL;
+#endif
 	file_inode(filp)->i_mapping = vm_pager_allocate(OBJT_DEFAULT, NULL, size,
 	    VM_PROT_READ | VM_PROT_WRITE, 0, curthread->td_ucred);
 
 	if (file_inode(filp)->i_mapping == NULL)
 		goto err_2;
+#if 1 // TOS
+	filp->sh = 1; // jkwak
+#endif
 
 	return (filp);
 err_2:
