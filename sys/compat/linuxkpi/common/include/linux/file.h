@@ -65,26 +65,13 @@ static inline void
 fput(struct linux_file *filp)
 {
 	if (filp->_file == NULL) {
-#if 1 // TOS
+#ifndef __TOS_ADD
 		if (filp->sh && filp->f_vnode) {
 			struct vnode *vp = filp->f_vnode;
-
-			/* NOTE(kim):
-			 * LinuxKPI uses i_mapping in its own way, and
-			 * doesn't deallocate i_mapping properly.
-			 * See also 'linux_fs.c:shmem_file_setup'.
-			 */
-			//printf("%s 0: orig_bo_object: %p\n", __func__, filp->orig_bo_object);
-			vm_pager_deallocate(vp->i_mapping);
-			vp->i_mapping = filp->orig_bo_object; // NULL;
-
+			vm_object_deallocate(vp->i_mapping);	
+			vp->i_mapping = NULL;
 			vp->v_data = NULL;
-
-			//printf("%s 1: use: %d, hold: %d\n", __func__, vp->v_usecount, vp->v_holdcnt);
-			//vgone(vp); // FIXME: don't sure
-			//printf("%s 2: use: %d, hold: %d\n", __func__, vp->v_usecount, vp->v_holdcnt);
-			vrele(vp); // jkwak
-			//printf("%s 3: use: %d, hold: %d\n", __func__, vp->v_usecount, vp->v_holdcnt);
+			vrele(vp); 
 		}
 #endif
 		kfree(filp);
