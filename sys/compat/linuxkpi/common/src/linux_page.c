@@ -473,7 +473,7 @@ retry:
 	}
 }
 
-#if __TOS_BP_11
+#ifndef __TOS_BP_11
 #if defined(__i386__) || defined(__amd64__)
 
 int
