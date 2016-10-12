@@ -331,12 +331,15 @@ shmem_file_setup(char *name, int size, int flags)
 
 	filp->f_dentry = &filp->f_dentry_store;
 	filp->f_vnode = vp;
+	
 	file_inode(filp)->i_mapping = vm_pager_allocate(OBJT_DEFAULT, NULL, size,
 	    VM_PROT_READ | VM_PROT_WRITE, 0, curthread->td_ucred);
 
 	if (file_inode(filp)->i_mapping == NULL)
 		goto err_2;
-
+#ifndef __TOS_ADD
+	filp->sh = 1; /* Indicate shmem_file_setup was successful */
+#endif
 	return (filp);
 err_2:
 	_vdrop(vp, 0);
