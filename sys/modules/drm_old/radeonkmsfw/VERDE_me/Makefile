@@ -1,6 +1,6 @@
 # $FreeBSD$
 
-KMOD=	radeonkmsfw_old_VERDE_me
+KMOD=	radeonkmsfw_VERDE_me
 IMG=	VERDE_me
 
 .include <bsd.kmod.mk>

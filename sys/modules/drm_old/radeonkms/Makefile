@@ -2,7 +2,7 @@
 
 .PATH:	${.CURDIR}/../../../dev/drm_old/radeon
 
-KMOD	= radeonkms_old
+KMOD	= radeonkms
 SRCS	=								\
 	rn50_reg_safe.h							\
 	r100_reg_safe.h							\

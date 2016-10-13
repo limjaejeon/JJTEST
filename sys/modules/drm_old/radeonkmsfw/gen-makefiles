@@ -22,7 +22,7 @@ for file in $fwdir/*.uu; do
 	cat > $scriptdir/$img/Makefile <<EOF
 # \$FreeBSD$
 
-KMOD=	radeonkmsfw_old_$img
+KMOD=	radeonkmsfw_$img
 IMG=	$img
 
 .include <bsd.kmod.mk>

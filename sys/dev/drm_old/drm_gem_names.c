@@ -50,7 +50,7 @@ drm_gem_names_init(struct drm_gem_names *names)
 	names->unr = new_unrhdr(1, INT_MAX, NULL); /* XXXKIB */
 	names->names_hash = hashinit(1000 /* XXXKIB */, M_GEM_NAMES,
 	    &names->hash_mask);
-	mtx_init(&names->lock, "drmnames", NULL, MTX_DEF);
+	mtx_init(&names->lock, "drmn_oldames", NULL, MTX_DEF);
 }
 
 void

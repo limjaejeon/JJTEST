@@ -1,6 +1,6 @@
 # $FreeBSD$
 
-KMOD=	radeonkmsfw_old_RV630_me
+KMOD=	radeonkmsfw_RV630_me
 IMG=	RV630_me
 
 .include <bsd.kmod.mk>

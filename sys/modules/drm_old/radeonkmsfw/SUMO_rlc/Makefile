@@ -1,6 +1,6 @@
 # $FreeBSD$
 
-KMOD=	radeonkmsfw_old_SUMO_rlc
+KMOD=	radeonkmsfw_SUMO_rlc
 IMG=	SUMO_rlc
 
 .include <bsd.kmod.mk>

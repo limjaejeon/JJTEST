@@ -376,11 +376,11 @@ static driver_t radeon_driver = {
 };
 
 extern devclass_t drm_devclass;
-DRIVER_MODULE_ORDERED(radeonkms_old, vgapci, radeon_driver, drm_devclass,
+DRIVER_MODULE_ORDERED(radeonkms, vgapci, radeon_driver, drm_devclass,
     NULL, NULL, SI_ORDER_ANY);
-MODULE_DEPEND(radeonkms_old, drmn_old, 1, 1, 1);
-MODULE_DEPEND(radeonkms_old, agp, 1, 1, 1);
-MODULE_DEPEND(radeonkms_old, iicbus, 1, 1, 1);
-MODULE_DEPEND(radeonkms_old, iic, 1, 1, 1);
-MODULE_DEPEND(radeonkms_old, iicbb, 1, 1, 1);
-MODULE_DEPEND(radeonkms_old, firmware, 1, 1, 1);
+MODULE_DEPEND(radeonkms, drmn_old, 1, 1, 1);
+MODULE_DEPEND(radeonkms, agp, 1, 1, 1);
+MODULE_DEPEND(radeonkms, iicbus, 1, 1, 1);
+MODULE_DEPEND(radeonkms, iic, 1, 1, 1);
+MODULE_DEPEND(radeonkms, iicbb, 1, 1, 1);
+MODULE_DEPEND(radeonkms, firmware, 1, 1, 1);

@@ -35,12 +35,6 @@ __FBSDID("$FreeBSD$");
 #ifndef _DRM_LINUX_LIST_H_
 #define _DRM_LINUX_LIST_H_
 
-#ifndef LIST_HEAD_DEF
-struct list_head {
-	struct list_head *next, *prev;
-};
-#endif
-
 #define list_entry(ptr, type, member) container_of(ptr,type,member)
 
 static __inline__ void
