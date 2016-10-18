@@ -1,4 +1,4 @@
-TOS 11.0 Bloody Kernel (Testing Branch)
+TOS 11.0 Distribution Kernel
 
 This is the top level of the FreeBSD source directory.  This file
 was last revised on:
@@ -84,3 +84,4 @@ For information on synchronizing your source tree with one or more of
 the FreeBSD Project's development branches, please see:
 
   http://www.freebsd.org/doc/en_US.ISO8859-1/books/handbook/synching.html
+>>>>>>> drm-4.6-rc

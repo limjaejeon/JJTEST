@@ -33,11 +33,11 @@ __FBSDID("$FreeBSD$");
 #include <dev/drm_old/drmP.h>
 #include <dev/drm_old/drm_pciids.h>
 #include <dev/drm_old/i915/i915_drm.h>
-#include "dev/drm_old/i915/i915_drv.h"
+#include "dev/drm2/i915/i915_drv.h"
 #ifdef __linux__
-#include "dev/drm_old/i915/i915_trace.h"
+#include "dev/drm2/i915/i915_trace.h"
 #endif
-#include "dev/drm_old/i915/intel_drv.h"
+#include "dev/drm2/i915/intel_drv.h"
 
 #include <dev/drm_old/drm_crtc_helper.h>
 
@@ -1218,7 +1218,7 @@ static device_method_t i915_methods[] = {
 };
 
 static driver_t i915_driver = {
-	"drmn",
+	"drmn_old",
 	i915_methods,
 	sizeof(struct drm_device)
 };
@@ -1230,7 +1230,7 @@ MODULE_LICENSE("GPL and additional rights");
 extern devclass_t drm_devclass;
 DRIVER_MODULE_ORDERED(i915kms, vgapci, i915_driver, drm_devclass, 0, 0,
     SI_ORDER_ANY);
-MODULE_DEPEND(i915kms, drmn, 1, 1, 1);
+MODULE_DEPEND(i915kms, drmn_old, 1, 1, 1);
 MODULE_DEPEND(i915kms, agp, 1, 1, 1);
 MODULE_DEPEND(i915kms, iicbus, 1, 1, 1);
 MODULE_DEPEND(i915kms, iic, 1, 1, 1);

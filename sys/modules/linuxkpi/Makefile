@@ -4,6 +4,7 @@
 
 KMOD=	linuxkpi
 SRCS=	interval_tree.c \
+	rbtree.c \
 	linux_acpi.c \
 	linux_backlight.c \
 	linux_compat.c \

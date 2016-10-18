@@ -118,6 +118,9 @@ struct linux_file {
 	struct vnode	*f_vnode;
 	atomic_long_t		f_count;
 	vm_object_t	f_mapping;
+#ifndef __TOS_ADD
+	int		sh; /* shmem_file_setup */
+#endif
 };
 #define f_inode		f_vnode
 #define	file		linux_file

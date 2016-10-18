@@ -535,6 +535,10 @@ hdaa_presence_handler(struct hdaa_widget *w)
 	struct hdaa_audio_as *as;
 	uint32_t res;
 	int connected, old;
+	struct hdaa_pcm_devinfo *pdevinfo;
+	const char *name;
+	char notify_buf[16];
+	int pcm_num;
 
 	if (w->enable == 0 || w->type !=
 	    HDA_PARAM_AUDIO_WIDGET_CAP_TYPE_PIN_COMPLEX)
@@ -565,8 +569,27 @@ hdaa_presence_handler(struct hdaa_widget *w)
 		hdaa_hpredir_handler(w);
 	if (as->dir == HDAA_CTL_IN && old != 2)
 		hdaa_autorecsrc_handler(as, w);
-	if (old != 2)
+	if (old != 2) {
 		hdaa_channels_handler(as);
+
+        pdevinfo = as->pdevinfo;
+        name = device_get_nameunit(pdevinfo->dev);
+
+        if (name[0] == 'p' && name[1] == 'c' && name[2] == 'm')
+            snprintf(notify_buf, sizeof(notify_buf), "notify=%c", name[3]);
+        else
+            snprintf(notify_buf, sizeof(notify_buf), "notify=%d", snd_unit);
+
+        if (connected) {
+            devctl_notify("SND_HDA", "Jack_Detect", "connect", notify_buf);
+			//device_printf(devinfo->dev, "*** Jack_Detect - connect %s\n", notify_buf);
+        } else {
+            sscanf(name + 3, "%d", &pcm_num);
+            if (pcm_num == snd_unit)
+                devctl_notify("SND_HDA", "Jack_Detect", "disconnect", NULL);
+            //device_printf(devinfo->dev, "*** Jack - disconnect pcm_num:%d, snd_unit:%d\n", pcm_num, snd_unit);
+        }
+    }
 }
 
 /*
@@ -7000,6 +7023,7 @@ hdaa_pcm_attach(device_t dev)
 	struct snddev_info *d;
 	char status[SND_STATUSLEN];
 	int i;
+	char sndunit_buf[16];
 
 	pdevinfo->chan_size = pcm_getbuffersize(dev,
 	    HDA_BUFSZ_MIN, HDA_BUFSZ_DEFAULT, HDA_BUFSZ_MAX);
@@ -7110,6 +7134,10 @@ hdaa_pcm_attach(device_t dev)
 	    device_get_nameunit(device_get_parent(dev)),
 	    PCM_KLDSTRING(snd_hda));
 	pcm_setstatus(dev, status);
+
+	snprintf(sndunit_buf, sizeof(sndunit_buf), "sndunit=%d", snd_unit);
+    devctl_notify("SND_HDA", "Default_Unit", "setsndunit", sndunit_buf);
+	//device_printf(devinfo->dev, "*** Default - %d\n" , snd_unit);
 
 	return (0);
 }

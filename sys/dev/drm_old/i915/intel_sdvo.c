@@ -2738,7 +2738,7 @@ static driver_t intel_sdvo_ddc_proxy_driver = {
 	sizeof(struct intel_sdvo_ddc_proxy_sc)
 };
 static devclass_t intel_sdvo_devclass;
-DRIVER_MODULE_ORDERED(intel_sdvo_ddc_proxy, drmn, intel_sdvo_ddc_proxy_driver,
+DRIVER_MODULE_ORDERED(intel_sdvo_ddc_proxy, drmn_old, intel_sdvo_ddc_proxy_driver,
     intel_sdvo_devclass, 0, 0, SI_ORDER_FIRST);
 
 static bool

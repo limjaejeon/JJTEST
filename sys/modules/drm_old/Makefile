@@ -29,9 +29,9 @@ _radeonkmsfw=	radeonkmsfw
 .endif
 
 SUBDIR = \
-	drm_old \
+	drm2 \
 	${_radeonkms} \
-	${_radeonkmsfw} \
-#	${_i915kms} \
+	${_radeonkmsfw}
+	#${_i915kms} \
 
 .include <bsd.subdir.mk>

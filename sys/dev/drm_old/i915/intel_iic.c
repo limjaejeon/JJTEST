@@ -529,7 +529,7 @@ static driver_t intel_gmbus_driver = {
 	sizeof(struct intel_iic_softc)
 };
 static devclass_t intel_gmbus_devclass;
-DRIVER_MODULE_ORDERED(intel_gmbus, drmn, intel_gmbus_driver,
+DRIVER_MODULE_ORDERED(intel_gmbus, drmn_old, intel_gmbus_driver,
     intel_gmbus_devclass, 0, 0, SI_ORDER_FIRST);
 DRIVER_MODULE(iicbus, intel_gmbus, iicbus_driver, iicbus_devclass, 0, 0);
 
@@ -606,7 +606,7 @@ static driver_t intel_iicbb_driver = {
 	sizeof(struct intel_iic_softc)
 };
 static devclass_t intel_iicbb_devclass;
-DRIVER_MODULE_ORDERED(intel_iicbb, drmn, intel_iicbb_driver,
+DRIVER_MODULE_ORDERED(intel_iicbb, drmn_old, intel_iicbb_driver,
     intel_iicbb_devclass, 0, 0, SI_ORDER_FIRST);
 DRIVER_MODULE(iicbb, intel_iicbb, iicbb_driver, iicbb_devclass, 0, 0);
 

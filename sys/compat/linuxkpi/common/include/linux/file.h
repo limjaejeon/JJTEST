@@ -40,6 +40,8 @@
 
 #include <linux/fs.h>
 
+#include <vm/vm_pager.h>
+
 struct linux_file;
 
 #undef file
@@ -63,6 +65,15 @@ static inline void
 fput(struct linux_file *filp)
 {
 	if (filp->_file == NULL) {
+#ifndef __TOS_ADD
+		if (filp->sh && filp->f_vnode) {
+			struct vnode *vp = filp->f_vnode;
+			vm_object_deallocate(vp->i_mapping);	
+			vp->i_mapping = NULL;
+			vp->v_data = NULL;
+			vrele(vp); 
+		}
+#endif
 		kfree(filp);
 		return;
 	}
