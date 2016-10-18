@@ -9,7 +9,6 @@ __FBSDID("$FreeBSD$");
 #include <sys/kdb.h>
 #include <sys/param.h>
 #include <sys/systm.h>
-#include <ddb/ddb.h>
 
 #define FB_MAJOR		29   /* /dev/fb* framebuffers */
 #define FBPIXMAPSIZE	(1024 * 8)
@@ -39,7 +38,7 @@ fb_info_print(struct fb_info *t)
 	       t->fb_type, t->fb_height, t->fb_width, t->fb_depth);
 	printf("cmsize=%d size=%d\n",
 	       t->fb_cmsize, t->fb_size);
-	printf("pbase=0x%zx vbase=0x%zx\n",
+	printf("pbase=0x%lx vbase=0x%lx\n",
 	       t->fb_pbase, t->fb_vbase);
 	printf("name=%s flags=0x%x stride=%d bpp=%d\n",
 	       t->fb_name, t->fb_flags, t->fb_stride, t->fb_bpp);
